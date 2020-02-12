@@ -19,7 +19,7 @@ def Parabolic(P, l, C, E, Sy):
     return 2*(P/(math.pi*Sy)+Sy*l**2/(math.pi**2*C*E))**(1/2)
 
 def ParabolicP(d, l, C, E, Sy):
-    return (Sy-(Sy/(2*math.pi*(d/4)))**2/(C*E))*(math.pi*d**2/4)
+    return (Sy-(Sy*l/(2*math.pi*(d/4)))**2/(C*E))*(math.pi*d**2/4)
 
 def ParabolicRectb(P, h, Sy, l, C, E):
     return P/(h*Sy*(1-3*l**2*Sy/(math.pi**2*C*E*h**2)))
@@ -27,7 +27,7 @@ def ParabolicRectb(P, h, Sy, l, C, E):
 def ParabolicRecth(P, b, Sy, l, C, E):
     return P/(2*b*Sy)+((P/(2*b*Sy))**2+3*l**2*Sy/(math.pi**2*C*E))**(1/2)
 
-def ParabolicRectP(Sy, b, h, C, E):
+def ParabolicRectP(Sy, l, b, h, C, E):
     return (Sy-(Sy/(2*math.pi*(h/math.sqrt(12))))**2/(C*E))*b*h
 
 def LdivKRound(l, d):
@@ -72,7 +72,7 @@ def Problem4_109():
     l = 0.35
     b = 0.03
     Sy = 180E6
-    P = 19899
+    P = 9949.52
     h = EulersRecth(P, l, C, E, b)
     print("Initial width:", h)
     lk = LdivKRect(l, 0.007)
