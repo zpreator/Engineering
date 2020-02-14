@@ -1,0 +1,18 @@
+begin function(x = initial guess)
+    equation 1 = x^3-1
+    equation 2 = sqrt((120-y)/8)
+
+    while ex > 0.00001 and ey > 0.00001
+        xold = x
+        yold = y
+        y = equation1(x)
+        x = equation2(y)
+        exold = ex
+        eyold = ey        
+        ex = abs(x-xold)/x
+        ey = abs(y-yold)/y
+        if ex > exold or ey > eyold
+            quit
+    end while    
+    return x, y
+end function
