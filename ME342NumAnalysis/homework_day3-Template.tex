@@ -1,0 +1,126 @@
+\documentclass[11pt]{article}
+\setlength{\baselineskip}{13pt}
+\setlength{\parskip}{10pt plus 1pt minus 1pt}
+\setlength{\parindent}{0em}
+\usepackage[margin=1.0in]{geometry}
+\pagestyle{empty}
+
+%%%%%%%%%%%%%%%%   Font choice   %%%%%%%%%%%%%%%%%%%%%%
+% Times-Roman
+\renewcommand\familydefault{ptm}
+\DeclareMathAlphabet{\mathmyrm}{OT1}{ptm}{m}{n}
+\DeclareMathAlphabet{\mathmybf}{OT1}{ptm}{bx}{n}
+\SetMathAlphabet{\mathmyrm}{bold}{OT1}{ptm}{bx}{n}
+% or the new way (but I don't like the Times math -- rho is too big
+%\usepackage{mathptmx}
+%%%%%%%%%%%%%%%   Font choice (end)    %%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%   Graphics   %%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx}
+%\includegraphics[width=1in, angle=270]{w97/t1plane.pstex}
+\usepackage{subfig}
+%%%%%%%%%%%%%%%   Graphics (end)   %%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%   Hyperref    %%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[colorlinks=true]{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, filecolor=blue, pagecolor=blue, urlcolor=blue}
+%%%%%%%%%%%%%%    Hyperref (end)  %%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%&    Other     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{color}
+\usepackage{latexsym}
+\usepackage{amsmath,amssymb,amsfonts,textcomp}
+\usepackage{fixltx2e}
+\usepackage{calc}
+\usepackage{longtable}
+\usepackage{booktabs} %for nice looking tables
+
+%set up a few equation variables substitutions
+\newcommand{\textnum}[1]{\ensuremath{\mathmyrm{#1}}}
+\newcommand{\dgr}{\boldmath\ensuremath{{}^\circ}\unboldmath}
+\newcommand{\vlm}{V \!\!\!\!\!\!\: \rule[0.07in]{.095in}{.0025in}}
+%%%%%%%%%%%%%%%%%%%%%%    Other (end)  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+\begin{center}
+  \large Assignment Name \\
+Student Name \\
+Date...
+\end{center}
+
+\textbf{Simple way of adding a section title}
+
+This is how you add an itemized list:
+\begin{itemize}
+\item 1st item
+\item another item
+\item and another ...
+\end{itemize}
+
+If you want to talk about a specific python function, like \texttt{np.max} you can make it look like computer text this way.
+
+This is how we add a numbered equation
+\begin{equation}
+\frac{dy}{dt} = y \sin^3(t)
+\label{eq:name}
+\end{equation}
+Be sure to define the variables like $y$ and $t$.
+
+If you want an unnumbered equation, it is a bit easier to add it this way
+$$ y = \int_0^{t_{final}} \rho V^2 dA $$
+
+To provide the link to a website you can either show the full URL, like \url{http://www.byui.edu}, or you can use a hyperlink, such as \href{http://www.byui.edu}{BYUI home}. You can also link to other parts of the text: using a link to \hyperref[eq:name]{Equation 1}.
+
+Here is code for a nice looking table (see Table~\ref{tab:nice})
+
+\begin{table}[htbp]
+\caption{Put the cation text here...}
+\label{tab:nice}
+\begin{center}
+\begin{tabular}{ccccccc} \toprule
+~ & \multicolumn{2}{c}{Bisection Method} & \multicolumn{2}{c}{Secant Method} & \multicolumn{2}{c}{Ridder's Method}  \\ 
+\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
+ Iteration & Root & Error & Root & Error & Root & Error  \\ \midrule 
+ 1 	& 0.9000 & 3.33E-1 &  0.7295 & 6.45E-1 & 1.1186 & 4.64E-01 \\
+ 3 	& 0.9750 & 7.69E-2 &  0.9191 & 5.64E-2 & 0.9477 & 9.13E-3 \\
+ 5 	& 0.9562 & 1.96E-2 &...&...&...&... \\ 
+ 7 	& 0.9516 & 4.93E-3 &...&...&...&... \\
+ 10 & 0.9475 & 6.18E-4 &...&...&...&... \\
+ 15 & 0.9480 & 1.93E-5 &...&...&...&... \\
+ 20 & 0.9480 & 6.04E-7 &...&...&...&... \\ \bottomrule
+\end{tabular}
+\end{center}
+\end{table}
+
+\newpage
+
+To add a figure, you use this code, and then you can reference it with Figure~\ref{fig:converging}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=4in]{convergingSolution}
+\caption{Don't forget to put in a good caption. Captions should be about two complete sentences, and explain what the figure or table is, and why it was important to include in the document.}
+\label{fig:converging}
+\end{center}
+\end{figure}
+
+If you have lots of related figures that you would like to display together, you can use the \texttt{subfig} package. You can reference the full figure like this (Figure~\ref{fig:withSubfigs})
+
+\begin{figure}[htbp]
+\begin{center}
+	\subfloat[Caption for subfig (a)]{\includegraphics[width=2.5in]{convergingSolution}} \qquad 
+       	\subfloat[Caption for subfig (b)]{\includegraphics[width=2.5in]{convergingSolution}} \\
+	\subfloat[Caption for subfig (c)]{\includegraphics[width=2.5in]{convergingSolution}} \qquad
+       	\subfloat[Caption for subfig (d)]{\includegraphics[width=2.5in]{convergingSolution}}	
+\caption{This would be the caption for the whole figure.}
+\label{fig:withSubfigs}
+\end{center}
+\end{figure}
+
+
+\end{document}
+
+
+

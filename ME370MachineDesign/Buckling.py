@@ -15,10 +15,10 @@ def EulersRectP(l, C, E, b, h):
 def EulersP(d, l, C, E):
     return C*math.pi**2*E/(l/(d/4))**2*(math.pi/4*d**2)
 
-def Parabolic(P, l, C, E, Sy):    
+def ParabolicRound(P, l, C, E, Sy):    
     return 2*(P/(math.pi*Sy)+Sy*l**2/(math.pi**2*C*E))**(1/2)
 
-def ParabolicP(d, l, C, E, Sy):
+def ParabolicRoundP(d, l, C, E, Sy):
     return (Sy-(Sy*l/(2*math.pi*(d/4)))**2/(C*E))*(math.pi*d**2/4)
 
 def ParabolicRectb(P, h, Sy, l, C, E):
@@ -56,12 +56,12 @@ def Problem4_108():
     lk1 = LdivKsub1(C, E, Sy)
     print("\nl/k sub 1:", lk1)
     da = EulersRound(P, 50, C, E)
-    db = Parabolic(P, 16, C, E, Sy)
+    db = ParabolicRound(P, 16, C, E, Sy)
     print("\nNew Diameters:", da, db)
     da = 1.2
     db = 0.8
     Pa = EulersP(da, 50, C, E)
-    Pb = ParabolicP(db, 16, C, E, Sy)
+    Pb = ParabolicRoundP(db, 16, C, E, Sy)
     print("\nForce 1:", Pa, "Force 2:", Pb)
     FS = Pa/(P/2.5)
     print("Factor of Safety", FS)
@@ -85,6 +85,23 @@ def Problem4_109():
     print("New h: ", h)
     P1 = EulersRectP(l, C, E, b, h)
     FS = P1/(P/3.5)
-    print("Factor of Safety", P1)
+    print("Factor of Safety", FS)
 
-Problem4_109()
+def test2Problem9():
+    """ Correct"""
+    C= 1
+    l = 10
+    E = 30E6
+    Sy = 65E3
+    F = 9226
+    FS = 1.9
+    P = F*FS 
+    d = EulersRound(P, l, C, E)
+    lk = LdivKRound(l, d)
+    lk1 = LdivKsub1(C, E, Sy)
+    print("Initial Diameter: ", d, "l/k :", lk, "l/k sub1 :", lk1)
+    dnew = ParabolicRound(P, l, C, E, Sy)
+    print(dnew)
+
+
+test2Problem9()
