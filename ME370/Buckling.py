@@ -65,6 +65,8 @@ def Problem4_108():
     print("\nForce 1:", Pa, "Force 2:", Pb)
     FS = Pa/(P/2.5)
     print("Factor of Safety", FS)
+    FS = Pb/(P/2.5)
+    print("Factor of Safety", FS)
 
 def Problem4_109():
     C = 1.4
@@ -85,4 +87,4 @@ def Problem4_109():
     FS = P1/(P/3.5)
     print("Factor of Safety", P1)
 
-Problem4_108()
+Problem4_109()
