@@ -103,5 +103,55 @@ def test2Problem9():
     dnew = ParabolicRound(P, l, C, E, Sy)
     print(dnew)
 
+def test2Attempt2Problem9():
+    """ Suppose you are designing a component 
+    that may fail in buckling. What is the minimum 
+    diameter in inches (and not using preferred sizes) 
+    in order to prevent the column from buckling with 
+    a factor of safety of 1.6? Assume a solid and 
+    round cross section with pinned-pinned 
+    (both ends rounded) end conditions, supporting a 
+    load P = 8,613 lbs, with the length L = 7 in,
+    E = 30 Mpsi, and Sy = 71 kpsi.  Give your answer 
+    in units of inches. """
+    C= 1
+    l = 7
+    E = 30E6
+    Sy = 71E3
+    F = 8613
+    FS = 1.6
+    P = F*FS 
+    d = EulersRound(P, l, C, E)
+    lk = LdivKRound(l, d)
+    lk1 = LdivKsub1(C, E, Sy)
+    print("Initial Diameter: ", d, "l/k :", lk, "l/k sub1 :", lk1)
+    dnew = ParabolicRound(P, l, C, E, Sy)
+    print(dnew)
 
-test2Problem9()
+def test2Attempt3Problem9():
+    """ Suppose you are designing a component 
+    that may fail in buckling. What is the minimum 
+    diameter in inches (and not using preferred sizes) 
+    in order to prevent the column from buckling with 
+    a factor of safety of 1.6? Assume a solid and 
+    round cross section with pinned-pinned 
+    (both ends rounded) end conditions, supporting a 
+    load P = 8,613 lbs, with the length L = 7 in,
+    E = 30 Mpsi, and Sy = 71 kpsi.  Give your answer 
+    in units of inches. """
+    C= 1
+    l = 18
+    E = 30E6
+    Sy = 60E3
+    F = 936
+    FS = 2.7
+    P = F*FS 
+    d = EulersRound(P, l, C, E)
+    lk = LdivKRound(l, d)
+    lk1 = LdivKsub1(C, E, Sy)
+    print("Initial Diameter: ", d, "l/k :", lk, "l/k sub1 :", lk1)
+    dnew = ParabolicRound(P, l, C, E, Sy)
+    print(dnew)
+
+
+test2Attempt2Problem9()
