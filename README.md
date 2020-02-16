@@ -8,5 +8,3 @@ Dynamics,
 Thermodynamics,
 Fluid Mechanics,
 Machine Design,
-
-And so much more
