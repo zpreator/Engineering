@@ -1,4 +1,5 @@
-from utilities.Raylock import *
+from utilites.Raylock import *
+# from SandboxLibrary.Raylock import *
 
 class App:
 
@@ -8,7 +9,7 @@ class App:
         AddInput(self, 'Axial Force')
         AddInput(self, 'Cross Sectional Area', units='inches^2')
         AddOutput(self, 'Normal Stress')
-        
+        # AddTable(self, 'My table', [['First Header', 'Second Header'],['Item 1', 'Item 2']])
 
         # add inputs
         # add outputs
@@ -18,11 +19,10 @@ class App:
 
 
     def solve(self):
-
-        AxialForce = GetInput('Axial Force')
-        CrossSectionalArea = GetInput('Cross Sectional Area')
+        F = GetInput(self, 'Axial Force')
+        A = GetInput(self, 'Cross Sectional Area')
         
-        NormalStress = AxialForce/CrossSectionalArea
+        NormalStress = F/A
         SetOutput(self, 'Normal Stress', NormalStress)
         
         # retrieve inputs
