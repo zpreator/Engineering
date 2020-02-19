@@ -76,9 +76,14 @@ def polynomialcod(sol,x,y):
 
 def main():
     """Main function to call all other functions"""
-    data = getfiledata('data_day2.txt')
-    x = data[:,0]
-    y = data[:,1]
+    #data = getfiledata('data_day2.txt')
+    # 0.5 8.7
+    # 0.9 9.3
+    # 1.7 10.6
+    # 2.4 12.1
+
+    x = np.array([0.5, 0.9, 1.7, 2.4])
+    y = np.array([8.7, 9.3, 10.6, 12.1])
     xline = np.arange(0.25,2.5,0.01)
     #Linear trendline
     linsol = linearregression(linear(x),y)
