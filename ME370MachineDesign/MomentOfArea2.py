@@ -11,7 +11,7 @@ class MomentOfArea2:
     Units: metric = 0, english = 1\n"""
     momentMetric = 0.0
     momentEnglish = 0.0
-    def __init__(self, shape, units, dim1, dim2, dim3, dim4):
+    def __init__(self, shape, units, dim1=None, dim2=None, dim3=None, dim4=None):
         self.shape = shape
         self.units = units
         if self.units == 1:

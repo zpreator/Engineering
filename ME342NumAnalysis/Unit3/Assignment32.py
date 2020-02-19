@@ -10,8 +10,8 @@ def CalculateB(data):
     """ Calculates the b value given a 2D numpy array of x and y values"""
     squared = [i**2 for i in data[0]]
     product = [i*j for i, j in zip(data[0], data[1])]
-    b = (((len(x)*(sumXY)-(sumX*sumY))/((len(x)*sumX2)-(sumX**2)))
     b=(len(data[0])*np.sum(product)-np.sum(data[0])*np.sum(data[1]))/(len(data[0])*np.sum(squared)-np.sum(data[0])**2)
+    # b = (((len(x)*(sumXY)-(sumX*sumY))/((len(x)*sumX2)-(sumX**2))))
     return b
 
 def CalculateA(data, b):
