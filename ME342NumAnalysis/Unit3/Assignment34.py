@@ -21,8 +21,10 @@ def Display(CS, depth):
     plt.plot(x, CS(x), 'r',label='Temperature')
     plt.plot(x, CS(x, 1), 'b', label='Gradient')
     plt.plot(x, CS(x, 2), 'g', label='Second Derivative')
-    plt.plot(depth, CS(depth), 'ko', label=r'Depth {0:4.1f} $m$'.format(depth))
+    plt.plot(depth, CS(depth), 'ko', label=r'Depth {0:4.1f} $m$, {1:4.2f} $C$'.format(depth, CS(depth)))
     plt.legend(loc='upper right')
+    plt.xlabel(r'Depth $m$')
+    plt.ylabel(r'Temperature $C$')
     plt.show()
 
 def FindDepth(CS):
@@ -37,6 +39,7 @@ def main():
     CS = CubicInter(data)
     depth = FindDepth(CS)
     Display(CS, depth)
+    print(CS(2.3, 1))
     
 
 main()

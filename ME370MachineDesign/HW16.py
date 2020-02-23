@@ -2,8 +2,8 @@ import Stress
 
 def GetStress(d):
     Sy = 67000
-    bending = Stress.BendingRound(-1955.73, d/2, d)
-    torsion = Stress.TorsionalRound(1999, d)
+    bending = Stress.BendingRound(-2110.96, d/2, d)
+    torsion = Stress.TorsionalRound(999, d)
     principles = Stress.MohrsCircle2D(bending, 0, torsion)
     FS = Sy/(abs(principles[1]-principles[0]))
     return FS
