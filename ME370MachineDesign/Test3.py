@@ -38,11 +38,12 @@ def Problem6(Fy, Lab, Lbc, Sy, FactorOfSafety):
     print(dia[np.argmin([abs(FactorOfSafety-i) for i in FS])])
 
 def Problem7(b, h, t, Sy, n):
-    """ INCORRECT"""
+    """ INCORRECT
+        Fix?"""
     Q = MomentOfArea1IBeam(b, b, h, t, t, b/3)
     I = MomentOfArea2('ibeam', 1, h+2*t, h, b/3, b).momentEnglish
     TauMax = Sy/(2*n)
-    th = b
+    th = b/3
     V = TauMax*I*th/Q
     print(V)
     
@@ -56,10 +57,23 @@ def Problem8(kic, h, a, b, n, beta):
     M = I*sigma*2/h
     print(M)
 
+def Problem9():
+    """Which failure theory is more conservative?"""
+    return 'MSS'
+
+def Problem10():
+    """When is the Coulomb-Mohr theory used?"""
+    return 'When yield strength in tension and compression are not equal'
+
+def Problem11():
+    """Material with epsilon = 0.1in/in, Syc = 10
+       Syt = 5 what theory do I use?
+       Fix?"""
+    return 'Ductile Coulomb-Mohr'
 # problem2(75, 36, -9, 29)
 # problem2(64, 9, 0, 15) # Problem3
 # Problem4()
 # Problem5()
 # Problem6(228, 10, 6, 50, 1.7)
-# Problem7(11, 4, 0.7, 125, 1.9)
-Problem8(26000000, 0.01, 0.002, 0.12, 2.4, 1.05)
+Problem7(11, 4, 0.7, 125, 1.9)
+# Problem8(26000000, 0.01, 0.002, 0.12, 2.4, 1.05)
