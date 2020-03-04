@@ -34,6 +34,10 @@ def StressCrackLength(ki, beta, a):
     """ Crack length equation solved for sigma"""
     return ki/(beta*np.sqrt(np.pi*a))
 
+def KiCrackLength(sigma, beta, a):
+    """ Crack length equation solved for Ki"""
+    return beta*sigma*np.sqrt(np.pi*a)
+
 
 def PressureVesselStressT(r, ri, ro, pi):
     return (ri**2*pi/(ro**2-ri**2))*(1-ro**2/r**2)

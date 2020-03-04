@@ -25,13 +25,16 @@ def TransverseShearRound(V, d, r):
     I = MomentOfArea2('circle', 0, dim1=d).momentMetric
     return V*Q/(I*d)
     
-def VonMises(sigmaA, sigmaB):
+def VonMises2(sigmaA, sigmaB):
     return np.sqrt(sigmaA**2-sigmaA*sigmaB+sigmaB**2)
 
-def MohrsCircle2D(Sx, Sy, Txy):
+def VonMises1(sigmaX, sigmaY, sigmaZ, tauXY, tauYZ, tauZX):
+    return 1/np.sqrt(2)*((sigmaX-sigmaY)**2 + (sigmaY-sigmaZ)**2 + (sigmaZ-sigmaX)**2+6*(tauXY**2 + tauYZ**2 + tauZX**2))**(1/2)
+
+def MohrsCircle2D(sigmaX, sigmaY, tauXY):
     """ Returns Sigma1, Sigma2 and Tau_max"""
-    Save     = (Sx + Sy) / 2.0
-    R        = (((Sx - Sy) / 2.0)**2 + Txy**2)**0.5
+    Save     = (sigmaX + sigmaY) / 2.0
+    R        = (((sigmaX - sigmaY) / 2.0)**2 + tauXY**2)**0.5
     S_first  = Save + R
     S_second = Save - R
     return [S_first, S_second, R]

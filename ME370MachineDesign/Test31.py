@@ -31,7 +31,7 @@ def Problem6(Fy, Lab, Lbc, Sy, FactorOfSafety):
         bending = BendingRound(M, d/2, d)
         torsion = TorsionalRound(T, d)
         sigma1, sigma2, taumax = MohrsCircle2D(bending, 0, torsion)
-        v = VonMises(sigma1, sigma2)
+        v = VonMises2(sigma1, sigma2)
         n = Sy/v
         FS.append(n)
         dia.append(d)
@@ -70,10 +70,11 @@ def Problem11():
        Syt = 5 what theory do I use?
        Fix?"""
     return 'Ductile Coulomb-Mohr'
+    
 # problem2(75, 36, -9, 29)
 # problem2(64, 9, 0, 15) # Problem3
 # Problem4()
 # Problem5()
 # Problem6(228, 10, 6, 50, 1.7)
-Problem7(11, 4, 0.7, 125, 1.9)
-# Problem8(26000000, 0.01, 0.002, 0.12, 2.4, 1.05)
+# Problem7(11, 4, 0.7, 125, 1.9)
+Problem8(26000000, 0.01, 0.002, 0.12, 2.4, 1.05)

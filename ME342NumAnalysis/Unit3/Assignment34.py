@@ -41,5 +41,13 @@ def main():
     Display(CS, depth)
     print(CS(2.3, 1))
     
+def CubicInterpolate(data):
+    """ Returns the y values for the range of 
+    x values"""
+    x = np.arange(0, 27.2, 0.1)
+    CS = CubicSpline(data[0], data[1])
+    zeroth = CS(x)
+    first = CS(x, 1)
+    second = CS(x, 2)
 
 main()

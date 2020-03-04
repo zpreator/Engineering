@@ -11,7 +11,8 @@ def RawData():
 
 def findNearest(values, Temp, k):
     """ Returns the nearsest k x values"""
-    difference = [abs(values[0][i] - Temp) for i in range(len(values[0]))]
+    difference = [abs(values[0][i] - Temp) 
+                  for i in range(len(values[0]))]
     index = np.argsort(difference)
     indexes = index[0:k]
 

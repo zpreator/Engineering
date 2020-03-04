@@ -67,18 +67,21 @@ def PowerCurveFitRSq(data):
     sumlnxlny = np.sum(lnxlny)
     sumlnxsq = np.sum(lnxsq)
     sumlnysq = np.sum(lnysq)
-    rsq = (sumlnxlny-1/n*sumlnx*sumlny)**2/(sumlnxsq-sumlnx**2/n)/(sumlnysq-sumlny**2/n)
+    rsq = (sumlnxlny-1/n*sumlnx*sumlny)**2
+          /(sumlnxsq-sumlnx**2/n)/(sumlnysq-sumlny**2/n)
     return rsq
 
 def PowerCurveFit(data):
-    """ packages up the a, b, and rsq into a list for later"""
+    """ packages up the a, b, 
+    and rsq into a list for later"""
     b = PowerCurveFitB(data)
     a = PowerCurveFitA(data, b)
     rsq = PowerCurveFitRSq(data)
     return [a,b, rsq]
 
 def PowerCurve(x, a, b):
-    """ Is used for the curve_fit function in 'PowerCurveFitScipy'"""
+    """ Is used for the curve_fit 
+    function in 'PowerCurveFitScipy'"""
     return a*x**b
 
 def PowerCurveFitScipy():
@@ -92,7 +95,8 @@ def PowerCurveFitScipy():
     return [popt[0], popt[1], r_squared]
 
 def SutherlandsCurveFit(a0, b0):
-    """ Computes the sutherland curve fit for the data taking two initial guesses"""
+    """ Computes the sutherland curve 
+    fit for the data taking two initial guesses"""
     global data
     fitfunc = lambda T, a, b: a*np.sqrt(T)/(1+b/T)
     popt, pcov = curve_fit(fitfunc, data[0], data[1], p0=[a0, b0])

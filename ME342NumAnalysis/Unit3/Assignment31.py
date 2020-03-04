@@ -12,14 +12,18 @@ def GetData():
     return data
 
 def CalculateB(data):
-    """ Calculates the b value given a 2D numpy array of x and y values"""
+    """ Calculates the b value given a 
+    2D numpy array of x and y values"""
     squared = [i**2 for i in data[0]]
     product = [i*j for i, j in zip(data[0], data[1])]
-    b=(len(data[0])*np.sum(product)-np.sum(data[0])*np.sum(data[1]))/(len(data[0])*np.sum(squared)-np.sum(data[0])**2)
+    b=(len(data[0])*np.sum(product)-np.sum(data[0])
+       *np.sum(data[1]))/(len(data[0])
+       *np.sum(squared)-np.sum(data[0])**2)
     return b
 
 def PowerLawData(data):
-    newData = [[np.log(i) for i in data[0]], [np.log(j) for j in data[1]]]
+    newData = [[np.log(i) for i in data[0]], 
+              [np.log(j) for j in data[1]]]
     return newData
 
 def PowerLawB(data):
