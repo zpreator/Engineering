@@ -32,8 +32,8 @@ def display(f, lineType, label='', done = False, xLabel=None, yLabel=None, plotL
         plt.ylabel(yLabel)
         plt.legend(loc='best')
         plt.tight_layout()
-        # plt.show()
-        plt.savefig('{0}.pdf'.format(plotLabel))
+        plt.show()
+        # plt.savefig('{0}.pdf'.format(plotLabel))
 
 def main():
     """ Calls the display function for each equation of the ODE"""
