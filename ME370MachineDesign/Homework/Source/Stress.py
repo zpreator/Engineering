@@ -1,5 +1,5 @@
 import numpy as np
-from MomentOfArea2 import MomentOfArea2
+from MomentOfArea import MomentOfArea2
 from GeometricProperties import *
 
 def TorsionalRound(T, d, r=None):

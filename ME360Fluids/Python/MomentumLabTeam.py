@@ -68,7 +68,7 @@ def main():
         plt.xlabel(r'Nozzle Diameter $(mm)$')
 
 
-        plt.xlabel(r'Flow Rate $(L/min)$')
+        # plt.xlabel(r'Flow Rate $(L/min)$')
         plt.ylabel(r'Force $(N)$')
         #plt.xlabel(r'Time ($s$)') #the r'...' alows for LaTeX math input
         # plt.ylabel(r'Voltage ($mV$)')
@@ -77,7 +77,7 @@ def main():
     #plt.grid()
     plt.tight_layout()
     #plt.show()
-    plt.savefig('Idiot.pdf') # save the image as a vecortized pdf
+    plt.savefig('PowerLaw.pdf') # save the image as a vecortized pdf
     plt.show()
     
 main()

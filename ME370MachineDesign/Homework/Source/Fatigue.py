@@ -17,3 +17,9 @@ def Cycles(sigmaRev, f, Sut, Se):
     b = CyclesB(f, Sut, Se)
     N = (sigmaRev/a)**(1/b)
     return N
+
+def main():
+    n = Goodman(596500, 896500, 23984, 120000)
+    print(n)
+
+main()
