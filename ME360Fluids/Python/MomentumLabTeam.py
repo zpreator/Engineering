@@ -5,6 +5,7 @@ from scipy.optimize import curve_fit
 def GetData():
     # data = np.loadtxt(u"C:/Repos/Engineering/ME360Fluids/MomentumData.txt", unpack=True)
     data = np.array([[2.83, 3.28, 5.25, 6.35], [0.34, 0.2425, 0.09, 0.06], [0.012, 0.00695, 0.006, 0.013]])
+    # data = np.array([[2.83, 3.28, 5.25, 6.35], [0.68, 0.485, 0.185, 0.11], [0.0071, 0.00885, 0.007475, 0.0075]])
     # diameters = np.array([2.83, 3.28, 5.25, 6.35])
     # forces = data[7]
     # stdDev = data[8]
@@ -27,6 +28,7 @@ def PowerCurve(x, a, b):
     return a*x**b
 
 def main():
+    plt.figure(figsize=(5,3))
     data = GetData()
     shapes = ['^', 'o', 's', 'P']
     plt.rc('font', family='serif', size=10)
@@ -76,8 +78,7 @@ def main():
     plt.legend(loc='best')
     #plt.grid()
     plt.tight_layout()
-    #plt.show()
-    plt.savefig('PowerLaw.pdf') # save the image as a vecortized pdf
-    plt.show()
+    plt.savefig('NozzleVForce65.pdf') # save the image as a vecortized pdf
+    # plt.show()
     
 main()

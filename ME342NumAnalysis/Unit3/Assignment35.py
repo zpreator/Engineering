@@ -67,8 +67,7 @@ def PowerCurveFitRSq(data):
     sumlnxlny = np.sum(lnxlny)
     sumlnxsq = np.sum(lnxsq)
     sumlnysq = np.sum(lnysq)
-    rsq = (sumlnxlny-1/n*sumlnx*sumlny)**2
-          /(sumlnxsq-sumlnx**2/n)/(sumlnysq-sumlny**2/n)
+    rsq = (sumlnxlny-1/n*sumlnx*sumlny)**2/(sumlnxsq-sumlnx**2/n)/(sumlnysq-sumlny**2/n)
     return rsq
 
 def PowerCurveFit(data):

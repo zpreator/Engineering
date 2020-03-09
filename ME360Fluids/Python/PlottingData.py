@@ -32,6 +32,44 @@ def PowerCurve(x, a, b):
     """ Is used for the curve_fit function in 'PowerCurveFitScipy'"""
     return a*x**b
 
+def ProduceLatexTable(columnHeadings, data, title='', label=''):
+    """ Prints latex table"""
+    # Adds a catption and begins table
+    caption = '{' + title + '}'
+    print('\\begin{table}')
+    print('   \centering')
+    print('   \caption{0}'.format(caption))
+
+    # Sets the columns in \begin{tabular} (cccc...)
+    cols = ''
+    for i in range(len(data[0])):
+        cols += 'c'
+    print('   \\begin{tabular}{@{}', cols, '@{}}\\toprule')
+
+    # Sets the column headings
+    line = ''
+    for i in range(len(columnHeadings)-1):
+        line += columnHeadings[i] + ' & '
+    line += columnHeadings[-1]
+    print('      ', line, '\\\\ \midrule')
+
+    # Prints the rows with the data provided
+    for i in range(len(data)):
+        row = ''
+        for j in range(len(columnHeadings)-1):
+            row += str(data[i][j]) + ' & '
+            # row += '{0:6.4G}'.format(data[i][j]) + ' & '
+        row += str(data[i][-1])
+        # row += '{0:5.4G}'.format(data[i][-1])
+        print('      ', row, '\\\\')
+
+    # Ends the table schema
+    print('      \\bottomrule')
+    print('   \end{tabular}')
+    label = '{' + label + '}'
+    print('   \label{0}'.format(label))
+    print('\end{table}')
+
 def Display(x, y, lineType='.', done = False, xLabel=None, yLabel=None, powerCurve=False):
 
     # This removes the zeros from the lists (zeros will mess up the data)
@@ -56,8 +94,12 @@ def Display(x, y, lineType='.', done = False, xLabel=None, yLabel=None, powerCur
         plt.xlabel(xLabel[j])
         plt.ylabel(yLabel[j])
         plt.tight_layout()
-        plt.show()
+        # plt.savefig('MattIsCool.pdf')
+        # plt.show()
         j += 1
+    plt.show()
+
+# def Display2():
 
 def main():
     data = GetData()
@@ -85,14 +127,38 @@ def main():
     Std180 = data[20]
 
     #Begin Plotting
-    shapes = ['^', 'o', 's', 'P']
+    # shapes = ['^', 'o', 's', 'P']
+    plt.figure(figsize=(5,3))
     plt.rc('font', family='serif', size=10)
 
-    # This will produce 4 graphs, 1 for each nozzle size
-    xLabels = ['Label1', 'Label2', 'Label3', 'Label4']
-    yLabels = ['yLabel1', 'yLabel2', 'yLabel3', 'yLabel4']
+    # # This will produce 4 graphs, 1 for each nozzle size
+    # xLabels = ['Label1', 'Label2', 'Label3', 'Label4']
+    # yLabels = ['yLabel1', 'yLabel2', 'yLabel3', 'yLabel4']
+    # Display(Force74, VolumeFlowRate, xLabel=xLabels, yLabel=yLabels, powerCurve=True)
+    nozzles = [2.83, 3.28, 5.25, 6.35]
+    anglesFloat = [25, 30.5, 47.7, 65, 74, 90, 105, 120, 150, 180]
+    anglesString = [r'${0}$\dgr'.format(i) for i in anglesFloat]
+    lineTypes = ['-', '--', '-.', ':', '-', '--', '-.', ':', '-', '--']
+    g = 0
+    table = []
+    for i in range(1, len(data[0])-1, 2):
+        # for j in range(4):
+        F = [data[i][3], data[i][7], data[i][11], data[i][15]]            
+        plt.plot(nozzles, F, lineTypes[g], label=anglesString[g])
+        row = [anglesString[g]] + F
+        table.append(row)
+        g += 1
+    plt.legend(loc='best', ncol=2)
+    plt.xlabel(r'Nozzle size $(mm)$')
+    plt.ylabel(r'Force $(N)$')
+    plt.tight_layout()
+    # plt.savefig('AllAngles.pdf')
+    # plt.show()
+    nozzles2 = [r'Target angle',
+               r'$(2.83mm)$',
+               r'$(3.28mm)$',
+               r'$(5.25mm)$',
+               r'$(6.35mm)$',]
+    ProduceLatexTable(nozzles2, table)
 
-    Display(Force74, Std74, xLabel=xLabels, yLabel=yLabels, powerCurve=True)
-    
-    
 main()
