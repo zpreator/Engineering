@@ -17,6 +17,8 @@ def Problem7_1():
     print('Goodman', d)
     d2 = Fatigue.DEGerber(A, B, Se, Sut, n=2, Mode='d')
     print('Gerber', d2)
+    d3 = Fatigue.DEMorrow(A, B, Se, Sut, n=2, Mode='d')
+    print('Morrow', d3)
     d4 = Fatigue.DESWT(A, B, Se, Sut, n=2, Mode='d')
     print('SWT', d4)
 
@@ -39,5 +41,5 @@ def Problem7_2(d):
     dFinal = 0.75*D
     print(dFinal)
 
-Problem7_2(0.851)
-# Problem7_1()
+# Problem7_2(0.851)
+Problem7_1()
