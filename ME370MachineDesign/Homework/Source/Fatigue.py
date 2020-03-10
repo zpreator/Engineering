@@ -49,6 +49,20 @@ def DESWT(A, B, Se, Sut, d=None, n=None, Mode='n'):
     elif Mode == 'd':
         return (16*n/(np.pi*Se)*(A**2 + A*B)**(1/2))**(1/3)
 
+def CriticalSpeedShaft(l, E, T, m):
+		""" for uniform shaft"""
+		return (np.pi/l)**2*np.sqrt(E*T/m)
+		
+def RayleighsLumpedMasses(wList, yList):
+		""" For lumped masses on a shaft, use for all loads and then once for the shaft
+		To combine omegas us the relationship, 1/omegaTotal^2 = 1/omegaShaft^2 + 1/omegaLoads^2
+		Equation 7-32"""
+		omega = np.sqrt(9.81*sum(wList*yList)/sum(wList*yList**2))
+		return omega
+		
+def RayleighsAddSpeeds(omegaL, omegaS):
+	  return np.sqrt(1/(1/omegaS**2 + 1/omegaL**2))
+		
 def main():
     n = Goodman(596500, 896500, 23984, 120000)
     print(n)
