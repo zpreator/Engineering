@@ -17,7 +17,7 @@ def Problem7_1():
     print('Goodman', d)
     d2 = Fatigue.DEGerber(A, B, Se, Sut, n=2, Mode='d')
     print('Gerber', d2)
-    d3 = Fatigue.DEMorrow(A, B, Se, Sut, n=2, Mode='d')
+    d3 = Fatigue.DEMorrow(A, B, Se, Sut+345, n=2, Mode='d')
     print('Morrow', d3)
     d4 = Fatigue.DESWT(A, B, Se, Sut, n=2, Mode='d')
     print('SWT', d4)

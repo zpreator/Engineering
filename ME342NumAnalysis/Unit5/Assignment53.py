@@ -1,9 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import re
+# import re
 from scipy.stats import linregress
 from scipy.optimize import curve_fit
-
+"""
+Zachary Preator
+Code Mastery 10/10
+Numerical Analysis 9/10
+Technical Writing 7/10
+"""
 def K1(f, t, y, h):
     """ Returns the k1 calculations"""
     return f(t, y)
@@ -300,6 +305,8 @@ def Question7(table, listOfStepSize):
 
 
 def main():
+    """ All questions but 5 have functions associated, and either
+    create and save a plot, or print a latex friendly table"""
     Question1()
     Question2()
     Question3()
@@ -313,6 +320,4 @@ def main():
     Question6(table, listOfStepSize)
     Question7(table, listOfStepSize)
     
-
 main()
-# ProduceLatexTable(['Heading1', 'Heading2', 'Heading3'], [[1, 2, 3],[2, 3, 4]])
