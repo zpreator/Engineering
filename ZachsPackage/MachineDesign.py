@@ -22,7 +22,7 @@ class Application(tk.Frame):
 
 root = tk.Tk()
 root.title("Wassup")
-lbl = tk.Label(root, text="John Sucks", font=("Arial Bold", 50))
+lbl = tk.Label(root, text="Matt Sucks", font=("Arial Bold", 50))
 lbl.grid(column=0, row=0)
 # photo = tk.
 # root.geometry('350x200')

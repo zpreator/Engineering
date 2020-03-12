@@ -9,6 +9,10 @@ Code Mastery 10/10
 Numerical Analysis 9/10
 Technical Writing 7/10
 """
+function1 = lambda t, y: y*(np.sin(t))**3
+
+function2 = lambda t, y0: y0*np.exp(1/3*np.cos(t)**3-np.cos(t) + 2/3)
+
 def K1(f, t, y, h):
     """ Returns the k1 calculations"""
     return f(t, y)
@@ -31,9 +35,6 @@ def K4(f, t, y, h, K3):
     b = y + h*K3
     return f(a, b)
 
-function1 = lambda t, y: y*(np.sin(t))**3
-
-function2 = lambda t, y0: y0*np.exp(1/3*np.cos(t)**3-np.cos(t) + 2/3)
 
 def RK4(f, t, y, h):
     """ Calls the k functions and calculates the

@@ -15,15 +15,15 @@ class MomentOfArea2:
         self.shape = shape
         self.units = units
         if self.units == 1:
-            self.dim1 = Util.InchToMeter(dim1)
-            self.dim2 = Util.InchToMeter(dim2)
-            self.dim3 = Util.InchToMeter(dim3)
-            self.dim4 = Util.InchToMeter(dim4)
+            if dim1!= None: self.dim1 = Util.InchToMeter(dim1)
+            if dim2!= None: self.dim2 = Util.InchToMeter(dim2)
+            if dim3!= None: self.dim3 = Util.InchToMeter(dim3)
+            if dim4!= None: self.dim4 = Util.InchToMeter(dim4)
         elif self.units == 0:
-            self.dim1 = dim1
-            self.dim2 = dim2
-            self.dim3 = dim3
-            self.dim4 = dim4
+            if dim1!= None: self.dim1 = dim1
+            if dim2!= None: self.dim2 = dim2
+            if dim3!= None: self.dim3 = dim3
+            if dim4!= None: self.dim4 = dim4
         self.setMoments(shape)
     
     def setMoments(self, shape):        

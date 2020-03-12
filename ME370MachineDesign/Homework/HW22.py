@@ -1,4 +1,4 @@
-from Source import Fatigue
+from ZachsPackage import Fatigue
 
 
 def Problem7_1():
@@ -24,6 +24,7 @@ def Problem7_1():
 
 def Problem7_2(d):
     Sut = 175e3
+    Sy = 160e3
     Ma = 600
     Mm = 0
     Ta = 0
@@ -31,16 +32,16 @@ def Problem7_2(d):
     Seprime = 0.5*Sut/1000
     Ka = 2*(Sut/1000)**(-0.217)
     Kb = 0.879*d**(-0.107)
-    Se = Ka*Kb*Seprime
-    Kf = 1.81
-    Kfs = 1.46
+    Se = 55000
+    Kf = 2.2
+    Kfs = 1.8
     A = Fatigue.DEA(Kf, Ma, Kfs, Ta)
     B = Fatigue.DEB(Kf, Mm, Kfs, Tm)
-    d = Fatigue.DEGoodman(A, B, Se*1000, Sut, n=2.5, Mode='d')
+    d = Fatigue.DEGoodman(A, B, Se, Sut, n=2.5, Mode='d')
     D = d/0.65
     dFinal = 0.75*D
     print(dFinal)
 
-# Problem7_2(0.851)
-Problem7_1()
+Problem7_2(0.851)
+# Problem7_1()
 #Zach is really nerdy
