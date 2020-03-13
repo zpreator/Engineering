@@ -42,6 +42,6 @@ def Problem7_2(d):
     dFinal = 0.75*D
     print(dFinal)
 
-Problem7_2(0.851)
-# Problem7_1()
+# Problem7_2(0.851)
+Problem7_1()
 #Zach is really nerdy
