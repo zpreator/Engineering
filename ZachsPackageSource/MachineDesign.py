@@ -1,36 +1,56 @@
-import tkinter as tk
+from tkinter import *
 
-class Application(tk.Frame):
-    def __init__(self, master=None):
-        super().__init__(master)
-        self.master = master
-        self.pack()
-        self.create_widgets()
+class Fatigue:
+    def __init__(self, win):
+        self.win = win
+        self.lbl1=Label(win, text='Number of cycles? (If none, put 0)')
 
-    def create_widgets(self):
-        self.hi_there = tk.Button(self)
-        self.hi_there["text"] = "Harrison, you are homeless"
-        self.hi_there["command"] = self.say_hi
-        self.hi_there.pack(side="top")
+        self.t1=Entry(bd=3)
+    
+        # self.btn1 = Button(win, text='Add')
+        # self.btn2=Button(win, text='Subtract')
 
-        self.quit = tk.Button(self, text="QUIT", fg="red",
-                              command=self.master.destroy)
-        self.quit.pack(side="bottom")
+        self.lbl1.place(x=100, y=50)
+        self.t1.place(x=100, y=100)
+        
+        # self.lbl2.place(x=100, y=100)
+        # self.t2.place(x=200, y=100)
 
-    def say_hi(self):
-        print("hi there, everyone!")
+        self.b1=Button(win, text='Enter', command=self.GivenNCycles)
+        # self.b2=Button(win, text='Subtract')
+        # self.b2.bind('<Button-1>', self.sub)
 
-root = tk.Tk()
-root.title("Wassup")
-lbl = tk.Label(root, text="Matt Sucks", font=("Arial Bold", 50))
-lbl.grid(column=0, row=0)
-# photo = tk.
-# root.geometry('350x200')
-# btn = tk.Button(root, text="Click Me")
-# btn.grid(column=1, row=0)
+        self.b1.place(x=100, y=150)
+        # self.b2.place(x=200, y=150)
+
+        # self.lbl3.place(x=100, y=200)
+        # self.t3.place(x=200, y=200)
+
+    def GivenNCycles(self):
+        if self.t1.get() == '0':
+            self.lbl1.config(text='>1 loadings (y/n)?')
+            self.t1.delete(0, 'end')
+        else:
+            window2 = Toplevel(root)
+    # def add(self):
+    #     self.t3.delete(0, 'end')
+    #     num1=int(self.t1.get())
+    #     num2=int(self.t2.get())
+    #     result=num1+num2
+    #     self.t3.insert(END, str(result))
+
+    # def sub(self, event):
+    #     self.t3.delete(0, 'end')
+    #     num1=int(self.t1.get())
+    #     num2=int(self.t2.get())
+    #     result=num1-num2
+    #     self.t3.insert(END, str(result))
+
+    
+
+
+root=Tk()
+mywin=Fatigue(root)
+root.title('Fatigue')
+root.geometry("400x300+10+10")
 root.mainloop()
-
-
-# app = Application(master=root)
-# app.master.maxsize(1000, 400)
-# app.mainloop()

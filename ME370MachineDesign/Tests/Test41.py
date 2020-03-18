@@ -33,7 +33,7 @@ def Problem5(Sut, Se, sigma1, sigma2):
     failure criterion if needed."""
     sigmaA = Fatigue.AlternatingLoadsAmp(sigma1, sigma2)
     sigmaM = Fatigue.AlternatingLoadsMean(sigma1, sigma2)
-    # print(sigmaA, sigmaM)
+    print(sigmaA, sigmaM)
     sigmaRev = sigmaA
     nf = Se/sigmaRev
     print(abs(nf))
@@ -115,6 +115,9 @@ def Problem10():
     
 # Problem2(420)
 # Problem3(142, 39, 28)
-# Problem5(100, 55, -50, 15)
+# Problem3(146, 39, 29) # Test 4.3
+Problem5(100, 55, -50, 15)
+Problem5(115, 50, 13, 49)
 # Problem6(76000, 42000, 22000, 633, 2346, 1.4)
+# Problem6(55000, 44000, 22000, 621, 1812, 2.0)
 # Problem7()

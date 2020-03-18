@@ -10,6 +10,7 @@ def FindNewX(x0, x1, yDes, y0, y1):
 def FindStuff():
     DE = ODE.NumODESystemSolve()
     ans = DE.RK4(f1, f2, 0, 5, 0, 20, 1)
+    print(ans)
 
 class NumODESystemSolve:
     def RK4(self, f1, f2, x0,  y0, T1, T2, h):

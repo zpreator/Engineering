@@ -90,10 +90,6 @@ def display2(datas):
             theoY = [Theoretical(i, nozzlesFloat[g], anglesFloat[z]) for i in t]
             plt.plot(t, theoY, lineType)
 
-            
-
-            
-            
 
             #Plots the errorbars with uData (standard deviation data)
             plt.errorbar(tData,sData,yerr=uData,fmt=markerType,capsize=5)

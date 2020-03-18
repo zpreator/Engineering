@@ -7,6 +7,11 @@ def Goodman(SigmaA, SigmaM, Se, Sut):
 def Gerber(SigmaA, SigmaM, Se, Sut):
     return .5*(Sut/SigmaM)**2*(SigmaA/Se)*(-1+np.sqrt(1+(2*SigmaM*Se/(Sut*SigmaA))**2))
 
+def Morrow(SigmaA, SigmaM, Se, SigmaF):
+    """ SigmaF can be crudely calculated with 
+        SigmaF = Sut + 50 kpsi"""
+    return 1/(SigmaA/Se+SigmaM/SigmaF)
+
 def FatigueStrengthFactor(Sut, Mode='kpsi'):
     """ Equation 6-11 or fig 6-23 (f)"""
     if Mode == 'kpsi':
@@ -30,13 +35,13 @@ def AlternatingLoadsMean(sigma1, sigma2):
 
 def AlternatingLoadsAmp(sigma1, sigma2):
     """ Finds the amplitude (max load - mean load)"""
-    return (sigma1-sigma2)/2
+    return abs(sigma1-sigma2)/2
 
 def AlternatingLoadsGoodman(sigmaA, sigmaM, Sut):
     """ Equation 6-59"""
     return sigmaA/(1-sigmaM/Sut)
 
-def AlternatingLoadsVonMises(KfBend, KfAxial, KfsTorsion, sigmaBending, sigmaAxial, tauTorsion):
+def AlternatingLoadsVonMises(sigmaBending, sigmaAxial, tauTorsion, KfBend=1, KfAxial=1, KfsTorsion=1):
     """ Equation 6-66/67"""
     return np.sqrt((KfBend*sigmaBending+KfAxial*sigmaAxial)**2 + 3*(KfsTorsion*tauTorsion)**2)
 

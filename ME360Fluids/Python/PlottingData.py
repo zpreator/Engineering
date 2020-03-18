@@ -32,6 +32,14 @@ def PowerCurve(x, a, b):
     """ Is used for the curve_fit function in 'PowerCurveFitScipy'"""
     return a*x**b
 
+def Theoretical(vDot, Dn, theta):
+    vDot /= 60000 # m^3/s
+    Dn /= 1000 
+    rho = 998 # kg/m^3
+    # theta = theta/360*(2*np.pi) #Degrees to radians
+    theta = np.deg2rad(theta)
+    return rho*vDot**2*4/(Dn**2*np.pi)*(1-np.cos(theta))
+
 def ProduceLatexTable(columnHeadings, data, title='', label=''):
     """ Prints latex table"""
     # Adds a catption and begins table
@@ -105,6 +113,7 @@ def main():
     data = GetData()
     # All lists should correspond indeces (VolumeFlowRate[0] goes with Force25[0])
     VolumeFlowRate = data[0] # List of all volume flow rates
+    nozzles = [2.83, 3.28, 5.25, 6.35]
     Force25 = data[1] # List of all force values
     Std25 = data[2] # List of all std deviations
     Force305 = data[3]
@@ -131,34 +140,39 @@ def main():
     plt.figure(figsize=(5,3))
     plt.rc('font', family='serif', size=10)
 
+    plt.plot()
+
+
     # # This will produce 4 graphs, 1 for each nozzle size
     # xLabels = ['Label1', 'Label2', 'Label3', 'Label4']
     # yLabels = ['yLabel1', 'yLabel2', 'yLabel3', 'yLabel4']
     # Display(Force74, VolumeFlowRate, xLabel=xLabels, yLabel=yLabels, powerCurve=True)
-    nozzles = [2.83, 3.28, 5.25, 6.35]
-    anglesFloat = [25, 30.5, 47.7, 65, 74, 90, 105, 120, 150, 180]
-    anglesString = [r'${0}$\dgr'.format(i) for i in anglesFloat]
-    lineTypes = ['-', '--', '-.', ':', '-', '--', '-.', ':', '-', '--']
-    g = 0
-    table = []
-    for i in range(1, len(data[0])-1, 2):
-        # for j in range(4):
-        F = [data[i][3], data[i][7], data[i][11], data[i][15]]            
-        plt.plot(nozzles, F, lineTypes[g], label=anglesString[g])
-        row = [anglesString[g]] + F
-        table.append(row)
-        g += 1
-    plt.legend(loc='best', ncol=2)
-    plt.xlabel(r'Nozzle size $(mm)$')
-    plt.ylabel(r'Force $(N)$')
-    plt.tight_layout()
-    # plt.savefig('AllAngles.pdf')
-    # plt.show()
-    nozzles2 = [r'Target angle',
-               r'$(2.83mm)$',
-               r'$(3.28mm)$',
-               r'$(5.25mm)$',
-               r'$(6.35mm)$',]
-    ProduceLatexTable(nozzles2, table)
+    
+    
+    
+    # anglesFloat = [25, 30.5, 47.7, 65, 74, 90, 105, 120, 150, 180]
+    # anglesString = [r'${0}$\dgr'.format(i) for i in anglesFloat]
+    # lineTypes = ['-', '--', '-.', ':', '-', '--', '-.', ':', '-', '--']
+    # g = 0
+    # table = []
+    # for i in range(1, len(data[0])-1, 2):
+    #     # for j in range(4):
+    #     F = [data[i][3], data[i][7], data[i][11], data[i][15]]            
+    #     plt.plot(nozzles, F, lineTypes[g], label=anglesString[g])
+    #     row = [anglesString[g]] + F
+    #     table.append(row)
+    #     g += 1
+    # plt.legend(loc='best', ncol=2)
+    # plt.xlabel(r'Nozzle size $(mm)$')
+    # plt.ylabel(r'Force $(N)$')
+    # plt.tight_layout()
+    # # plt.savefig('AllAngles.pdf')
+    # # plt.show()
+    # nozzles2 = [r'Target angle',
+    #            r'$(2.83mm)$',
+    #            r'$(3.28mm)$',
+    #            r'$(5.25mm)$',
+    #            r'$(6.35mm)$',]
+    # ProduceLatexTable(nozzles2, table)
 
 main()
