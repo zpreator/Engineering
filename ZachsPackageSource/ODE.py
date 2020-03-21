@@ -219,6 +219,26 @@ class NumODESolve:
         """ Returns the Euler's method for the ODE f"""
         return y + f(t, y)*h
 
+def RK4(f,t0,y0,tf,h):
+    """ Runge-Kutta method that takes list of initial values (y0)
+    and returns the range of t values, and corresponding y values
+    for each item in the original y0 list. An ODE passed in as the
+    function must have the correct input parameters"""
+    t = np.arange(t0,tf+h,h)
+    n = len(t)
+    m = len(y0)
+    y = np.zeros([n,m])
+    y[0] = y0
+    
+    for i in range(n-1):
+        k1 = f(t[i],y[i])
+        k2 = f(t[i]+.5*h,y[i]+k1*.5*h)
+        k3 = f(t[i]+.5*h,y[i]+k2*.5*h) 
+        k4 = f(t[i]+h,y[i]+k3*h)
+        y[i+1] = y[i] + h/6*(k1 + 2*k2 + 2*k3 + k4)
+        
+    return t, y.transpose()
+
 # DE = NumODESolve()
 # print(DE.RK4Embed(f1, 0.5, 0, 4, 0.5))
 # print(DE.RK4Embed(function1, 1, 0, 1, 1))
