@@ -21,6 +21,9 @@ def ForceFromTorqueRaiseCollar(T, dm, dc, ft, fc, l):
 def Efficiency(F, l, Tr):
     return F*l/(2*np.pi*Tr)
 
+def SpringRate(E, d, D, t):
+    return 0.5774*np.pi*E*d/np.log((1.155*t+D-d)*(D+d)/((1.155*t+D+d)*(D-d)))
+
 def Example8_10():
     """ Example from 8th edition book
     Power in = 3 KW
@@ -80,4 +83,6 @@ def Example8_1():
     Tr2 = TorqueToRaiseWCollar(F, f, f, dm, dc, l)
     print(Tr2) #Should be the same as Tr
 
+var = SpringRate(207, 12, 18, 20)
+print(var)
 # Example8_1()

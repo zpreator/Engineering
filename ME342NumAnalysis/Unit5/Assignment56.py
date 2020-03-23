@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from ZachsPackage import Display as D
 L = 0.15 # Fin length
 Tb = 500 # Base temperature K
 k = 16.0 # Thermal conductivity W/mK
@@ -10,6 +11,10 @@ h = 25 # Heat transfer coefficient W/m^2
 TL = 350 # Fixed tip temperature K
 dx = 0.03 # Step size
 
+"""
+Zachary Preator
+Mastery Level 10/10
+"""
 def dTdUdx(x, var):
     """ ODE represented as two first order ODEs"""
     T = var[0]
@@ -50,35 +55,61 @@ def FuncGradientFixedT(x):
     m = np.sqrt(h*P/(k*Ac))
     thL = TL-Tf
     thb = Tb-Tf
-    return m*thL*np.cosh(m*x)/np.sinh(m*L)-m*thb*np.cosh(m*(L-x))/np.sinh(m*L)
+    return m*k*Ac/np.sinh(m*L)*(thb*np.cosh(m*(L-x)) - thL*np.cosh(m*x))
 
 def FuncTempAdiabatic(x):
+    """ Function for tempearture with adiabatic tip temperature"""
     m = np.sqrt(h*P/(k*Ac))
     thb = Tb-Tf
     return thb*(np.cosh(m*(L-x))/(np.cosh(m*L)))+Tf
 
 def FuncGradientAdiabatic(x):
+    """ Function for temp gradient with adiabatic tip temperature"""
     m = np.sqrt(h*P/(k*Ac))
     thb = Tb-Tf
-    return k*Ac*m*thb*(np.sinh(m*(L-x))/(np.cosh(m*L)))
+    return m*k*Ac*thb*np.sinh(m*(L-x))/np.cosh(m*L)
 
-# def Display(x, qa, Ta, x3, var3):
-#     plt.plot(x, qa, '-',label='Analytical')
-#     plt.plot(x3,-k*Ac*var3[1], '--', label='Numerical')
-#     plt.legend()
-#     plt.title('q(x)')
-#     plt.xlabel('Position')
-#     plt.ylabel('Q')
-#     # plt.savefig('q.pdf')
+def HTR(U):
+    """Calculates heat transfer rate given T' """
+    return -k*Ac*U
 
-#     plt.plot(x, Ta, '-',label='Analytical')
-#     plt.plot(x3,var3[0], '--', label='Numerical')
-#     plt.legend()
-#     plt.title('T(x)')
-#     plt.xlabel('Position')
-#     plt.ylabel('Temp')
-#     plt.show()
-#     # plt.savefig('T.pdf')
+def ProduceLatexTable(columnHeadings, data, title='', label=''):
+    """ Prints latex table"""
+    # Adds a catption and begins table
+    caption = '{' + title + '}'
+    print('\\begin{table}')
+    print('   \centering')
+    print('   \caption{0}'.format(caption))
+
+    # Sets the columns in \begin{tabular} (cccc...)
+    cols = ''
+    for i in range(len(data[0])):
+        cols += 'c'
+    print('   \\begin{tabular}{@{}', cols, '@{}}\\toprule')
+
+    # Sets the column headings
+    line = ''
+    for i in range(len(columnHeadings)-1):
+        line += columnHeadings[i] + ' & '
+    line += columnHeadings[-1]
+    print('      ', line, '\\\\ \midrule')
+
+    # Prints the rows with the data provided
+    for i in range(len(data)):
+        row = ''
+        for j in range(len(columnHeadings)-1):
+            # row += str(data[i][j]) + ' & '             # Use this line for the raw input
+            row += '{0:4.3E}'.format(data[i][j]) + ' & ' # Toggle this line to format numbers
+        # row += str(data[i][-1])                        # Raw input
+        row += '{0:4.3E}'.format(data[i][-1])            # Format numbers
+        print('      ', row, '\\\\')
+
+    # Ends the table schema
+    print('      \\bottomrule')
+    print('   \end{tabular}')
+    label = '{' + label + '}'
+    print('   \label{0}'.format(label))
+    print('\end{table}')
 
 def Display(data, lineType, label='', done = False, xLabel=None, yLabel=None, plotLabel=None, f=None, log=False):
     """ Displays data as [x, y]"""
@@ -95,7 +126,7 @@ def Display(data, lineType, label='', done = False, xLabel=None, yLabel=None, pl
         plt.ylabel(yLabel)
         plt.legend(loc='best')
         plt.tight_layout()
-        plt.savefig('{0}.pdf'.format(plotLabel))
+        # plt.savefig('{0}.pdf'.format(plotLabel))
         plt.show()
 
 def ShootingMethod(guess1, guess2, desiredVal, der):
@@ -114,6 +145,7 @@ def ShootingMethod(guess1, guess2, desiredVal, der):
     return x3, var3, guess3
 
 def main():
+    """ Calls all other methods"""
     tFixedT, valFixedT, guessFixedT = ShootingMethod(0, -1000, TL, 1) # We want the Temperature to be TL @ L
     tAdiabatic, valAdiabatic, guessAdiabatic = ShootingMethod(0, -1000, 0, 2) # We want the derivative to be 0 @ L
     print('2.')
@@ -127,6 +159,7 @@ def main():
     Ta = FuncTempAdiabatic(x)
     # Display(x, qa, Ta, x3, var3)
 
+    test = np.rot90(valFixedT)
     # Plot of temperature using fixed temperature guess
     plt.figure(figsize=(5, 3))
     Display([x, T], '-', label='Analytical') 
@@ -135,31 +168,27 @@ def main():
     # Plot of temp gradient using fixed temperature guess
     plt.figure(figsize=(5, 3))
     Display([x, q], '-', label='Analytical')
-    Display([tFixedT, valFixedT[1]], '--', label='Numerical', done=True, xLabel='Position', yLabel='Temperature', plotLabel='Temp Gradient(x)')
+    Display([tFixedT,  HTR(valFixedT[1])], '--', label='Numerical', done=True, xLabel='Position', yLabel='Temperature', plotLabel='Temp Gradient(x)')
 
     # Plot of temperature using adiabatic guess
     plt.figure(figsize=(5, 3))
     Display([x, Ta], '-', label='Analytical') 
-    Display([tFixedT, valFixedT[0]], '--', label='Numerical', done=True, xLabel='Position', yLabel='Temperature', plotLabel='Temperature(x)')
+    Display([tAdiabatic, valAdiabatic[0]], '--', label='Numerical', done=True, xLabel='Position', yLabel='Temperature', plotLabel='TemperatureA(x)')
 
     # Plot of temp gradient using adiabatic guess
     plt.figure(figsize=(5, 3))
     Display([x, qa], '-', label='Analytical') 
-    Display([tFixedT, valFixedT[0]], '--', label='Numerical', done=True, xLabel='Position', yLabel='Temperature', plotLabel='Temp Gradient(x)')
+    Display([tAdiabatic, HTR(valAdiabatic[1])], '--', label='Numerical', done=True, xLabel='Position', yLabel='Temperature', plotLabel='Temp GradientA(x)')
 
-    # q3a = FuncGradientAdiabatic(x3a)
-    # T3= FuncTempAdiabatic(x3a)
-    # errq = abs((q3a+k*Ac*var3a[1])/q3a)
-    # errT = abs((T3-var3a[0])/T3)
-    # print(errT)
-    # print(errq)
+    # Creating lists of all errors
+    TerrFixed = [abs((valFixedT[0][i] - FuncTempFixedT(tFixedT[i]))/FuncTempFixedT(tFixedT[i])) for i in range(len(tFixedT))]
+    qerrFixed = [abs((HTR(valFixedT[1][i]) - FuncGradientFixedT(tFixedT[i]))/FuncGradientFixedT(tFixedT[i])) for i in range(len(tFixedT))]
+    TerrAdiabatic = [abs((valAdiabatic[0][i] - FuncTempAdiabatic(tAdiabatic[i]))/FuncTempAdiabatic(tAdiabatic[i])) for i in range(len(tAdiabatic))]
+    qerrAdiabatic = [abs((HTR(valAdiabatic[1][i]) - FuncGradientAdiabatic(tAdiabatic[i]))/FuncGradientAdiabatic(tAdiabatic[i])) for i in range(len(tAdiabatic))]
 
-    # q3b = FuncGradientAdiabatic(x3b)
-    # T3b = FuncTempAdiabatic(x3b)
-    # errq = abs((q3b+k*Ac*var3b[0])/q3b)
-    # errT = abs((T3b-var3b[0])/T3b)
-    # print(errT)
-    # print(errq)
-
+    # Putting the error data into a latex table
+    table = []
+    [table.append([TerrFixed[i], qerrFixed[i], TerrAdiabatic[i], qerrAdiabatic[i]]) for i in range(len(tFixedT))]
+    ProduceLatexTable([r'$e_T$', r'$e_q$', r'$e_T$', r'$e_q$'], table)
 
 main()
