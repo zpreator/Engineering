@@ -24,6 +24,18 @@ def Efficiency(F, l, Tr):
 def SpringRate(E, d, D, t):
     return 0.5774*np.pi*E*d/np.log((1.155*t+D-d)*(D+d)/((1.155*t+D+d)*(D-d)))
 
+def Goodman(Se, Sut, sigmaI, sigmaA, sigmaM):
+    if sigmaM == 0:
+        return (Se*(Sut - sigmaI))/(sigmaA*(Sut + Se))
+    else:
+        return (Se*(Sut-sigmaI))/(Sut*sigmaA + Se*(sigmaM - sigmaI))
+
+def Gerber(Se, Sut, sigmaI, sigmaA):
+    return 1/(2*sigmaA*Se)*(Sut*np.sqrt(Sut**2 + 4*Se*(Se + sigmaI)) - Sut**2 - 2*sigmaI*Se)
+
+def ASMEElliptic(Se, Sut, Sp, sigmaI, sigmaA):
+    return Se/(sigmaA*(Sp**2 + Se**2))*(Sp*np.sqrt(Sp**2+Se**2-sigmaI**2)-sigmaI*Se)
+
 def Example8_10():
     """ Example from 8th edition book
     Power in = 3 KW
@@ -83,6 +95,6 @@ def Example8_1():
     Tr2 = TorqueToRaiseWCollar(F, f, f, dm, dc, l)
     print(Tr2) #Should be the same as Tr
 
-var = SpringRate(207, 12, 18, 20)
-print(var)
+# var = SpringRate(207, 12, 18, 20)
+# print(var)
 # Example8_1()
