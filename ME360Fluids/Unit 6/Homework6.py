@@ -21,16 +21,16 @@ def Problem1():
     print('Look up f in moody chart using Re1 and Re2: ', Re1, Re2)
 
     #From moody chart
-    f1 = 0.0185
-    f2 = 0.017
+    f1 = Fluids.HallandFriction(0, D1, Re1)
+    f2 = Fluids.HallandFriction(0, D2, Re2)
 
     h1 = Fluids.HeadLoss(f1, L1, D1, 0, Vin)
     h2 = Fluids.HeadLoss(f2, L2, D2, 0, Vout)
 
     headLoss = h1 + h2
-    fraction = h1/h2
+    fraction = h2/headLoss
     print('Headloss =', headLoss)
-    print('Fraction h1/h2 =', fraction)
+    print('Fraction h1/htotal =', fraction)
 
 def func1(f, L, D, sumK, rho, vDot):
     return (f*L/D + sumK)*rho*8*vDot**2/(np.pi**2*D**4)
@@ -165,4 +165,4 @@ def Test():
     P = (f*L/D + sum(k))*8*gamma*vDot**2/(np.pi**2*g*D**4)
     print(P/144)
 
-Problem4()
+Problem1()
