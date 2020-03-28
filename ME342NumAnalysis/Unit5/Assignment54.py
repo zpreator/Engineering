@@ -18,51 +18,57 @@ def Eulers(f, t, x, y, h, Mode='x'):
     else:
         return y + f(x, y, t)*h
 
-def K1(f1, f2, t, x, y, h):
-    """ Returns the k1 calculations"""
-    return f1(x, y, t), f2(x, y, t)
+def K1(f, t, x):
+    """ Returns the k1 calculations
+    f = list of functions
+    t = independent variable
+    x = list of dependent variables"""
+    x.append(t)
+    k1 = [func(*x) for func in f]
+    return k1
 
-def K2(f1, f2, t, x, y, h, K1x, K1y):
+def K2(f, t, x, h, K1):
     """ Returns the k2 calculations"""
     T = t + .5*h
-    X = x + .5*h*K1x
-    Y = y + .5*h*K1y
-    return f1(X, Y, T), f2(X, Y, T)
+    # X = x + .5*h*K1x
+    # Y = y + .5*h*K1y
+    X = [i + .5*h*j for i, j in zip(x, K1)]
+    X.append(T)
+    K2 = [func(*X) for func in f]
+    return K2
 
-def K3(f1, f2, t, x, y, h, K2x, K2y):
-    """ Returns the k3 calculations"""
+def K3(f, t, x, h, K2):
+    """ Returns the k2 calculations"""
     T = t + .5*h
-    X = x + .5*h*K2x
-    Y = y + .5*h*K2y
-    return f1(X, Y, T), f2(X, Y, T)
+    # X = x + .5*h*K1x
+    # Y = y + .5*h*K1y
+    X = [i + .5*h*j for i, j in zip(x, K2)]
+    X.append(T)
+    K3 = [func(*X) for func in f]
+    return K3
 
-def K4(f1, f2, t, x, y, h, K3x, K3y):
-    """ Returns the k4 calculations"""
-    T = t + h
-    X = x + h*K3x
-    Y = y + h*K3y
-    return f1(X, Y, T), f2(X, Y, T)
+def K4(f, t, x, h, K3):
+    """ Returns the k2 calculations"""
+    T = t + .5*h
+    # X = x + .5*h*K1x
+    # Y = y + .5*h*K1y
+    X = [i + .5*h*j for i, j in zip(x, K3)]
+    X.append(T)
+    K4 = [func(*X) for func in f]
+    return K4
 
-
-def RK4(f1, f2, t, x, y, h):
+def RK4(f, t, x, h):
     """ Calls the k functions and calculates the
     next y (y+1) and returns that y for an ODE f"""
     
-    k1x, k1y = K1(f1, f2, t, x, y, h)
-    k2x, k2y = K2(f1, f2, t, x, y, h, k1x, k1y)
-    k3x, k3y = K3(f1, f2, t, x, y, h, k2x, k2y)
-    k4x, k4y = K4(f1, f2, t, x, y, h, k3x, k3y)
-    xOut = x + 1/6*(k1x + 2*k2x + 2*k3x + k4x)*h
-    yOut = y + 1/6*(k1y + 2*k2y + 2*k3y + k4y)*h
-    return xOut, yOut
-    
-    # else:
-    #     k1 = K1(f, t, x, y, h)
-    #     k2 = K2(f, t, y, h, k1)
-    #     k3 = K3(f, t, y, h, k2)
-    #     k4 = K4(f, t, y, h, k3)
-    #     y1 = y + 1/6*(k1 + 2*k2 + 2*k3 + k4)*h
-    #     return y1
+    k1 = K1(f, t,x)
+    k2 = K2(f, t,x , h, k1)
+    k3 = K3(f, t,x , h, k2)
+    k4 = K4(f, t,x , h, k3)
+    # xOut = x + 1/6*(k1x + 2*k2x + 2*k3x + k4x)*h
+    # yOut = y + 1/6*(k1y + 2*k2y + 2*k3y + k4y)*h
+    xOut = [i + 1/6*(j + 2*k + 2*l + m)*h for i, j, k, l, m in zip(x, k1, k2, k3, k4)]
+    return xOut
 
 def GetEuler(f1, f2, x0, y0, endT, h):
     """ Gets the y values incrementally from
@@ -103,7 +109,7 @@ def GetRK4(f1, f2, x0,  y0, desiredY, h):
     RKy.append(y1)
     for t in np.arange(0, g, h):
         RKt.append(t)
-        x, y = RK4(f1, f2, t, x1, y1, h)
+        x, y = RK4([f1, f2], t, [x1, y1], h)
         # y = RK4(f2, t, x1, y1, h)
         x1 = x
         y1 = y

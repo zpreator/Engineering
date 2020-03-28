@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 """Zachary Preator
 """
 # Constants/Givens
@@ -13,7 +14,7 @@ rhow  = 998          # kg/m^3 (water density)
 Vtot  = 2            # L (2 liter bottle)
 
 # Calculations/Conversions
-rhoa  = Pa/(R*T)     # kg/m^3 (air density in Rexburg)
+rhoa  = Pa/(R*T)/1000# kg/m^3 (air density in Rexburg)
 Ab    = np.pi*D**2/4 # m^2 (cross sectional area of bottle)
 Vtot /= 1000         # L to m^3 (initial volume of water)
 mb   /= 1000         # g to kg (mass of empty bottle)
@@ -23,7 +24,7 @@ D    /= 39.37        # in to m (Diameter of 2 liter bottle)
 P0    = 0
 An    = 0
 Vw0   = 0
-
+Va0   = 0
 def Equation1(P):
     """ returns the velocity in m/s given:
     P = pressure in pa"""
@@ -35,11 +36,14 @@ def Equation2(y):
     mw = mass of water in the bottle
     (Each ODE takes all three parameters mw, vb, and yb)"""
     mw, vb, yb, t = y
-    volWater   = Equation3Vol(mw)     # m^3 Volume of water in bottle
-    volAir     = Vtot-volWater        # m^3 Volume of air in bottle
-    PbAbs      = Equation9(volAir)    # Pa absolute pressure in bottle
-    Pb         = Equation6Gage(PbAbs) # Pa gage pressure in bottle
-    v          = Equation1(Pb)        # m/s velocity of water exiting nozzle
+    Vw            = Equation3Vol(mw)     # m^3 Volume of water in bottle
+    Va            = Vtot-Vw        # m^3 Volume of air in bottle
+    PbAbs         = Equation9(Va, Vw)    # Pa absolute pressure in bottle
+    Pb            = Equation6Gage(PbAbs) # Pa gage pressure in bottle
+    v             = Equation1(Pb)        # m/s velocity of water exiting nozzle
+    global P0, Va0
+    P0            = PbAbs                # Setting global variable pressure in bottle
+    Va0           = Va                   # Setting global variable volume of air in bottle
     return Equation4(v)
 
 def Equation3Vol(m):
@@ -51,6 +55,11 @@ def Equation3Mass(V):
     """ returns the mass of water given:
     V = volume of water m^3"""
     return rhow*V
+
+def Equation3MassAir(V):
+    """ returns the mass of water given:
+    V = volume of water m^3"""
+    return rhoa*V
 
 def Equation4(v):
     """ returns the mass flow rate of water given:
@@ -74,11 +83,10 @@ def Equation6Gage(Pabs):
     Pabs = absolute pressure in pascals"""
     return Pabs - Pa
     
-def Equation9(Va):
+def Equation9(Va, Vw):
     """ returns the pressure in the bottle at the next time step"""
-    return P0*(Vtot - Vw0)/Va
-
-
+    Pnew = P0*Va0/Va # Update global pressure variable
+    return Pnew
 
 def Equation10(y):
     """ ODE2
@@ -89,9 +97,9 @@ def Equation10(y):
     mw, vb, yb, t = y
     Vw = Equation3Vol(mw)  # L Mass of water to volume of water
     Va = Vtot - Vw         # L Total volume of bottle - water to get volume of air
-    ma = Equation3Mass(Va) # kg mass of air 
+    ma = Equation3MassAir(Va) # kg mass of air 
     m = mw + mb + ma       # kg total mass of bottle + water + air
-    return SumForces(Vw, vb, m)/m
+    return -SumForces(Vw, vb, m)/m
 
 def Equation12(m):
     """ returns the weight due to gravity given:
@@ -129,10 +137,11 @@ def Area(d):
     return np.pi/4 * d**2
 
 def Eulers(f, y, tf, h):
-    """ f = list of functions with the form f(y[0], y[1], ... y[n])
-        y = list of initial values y[0] = initial value for first variable
-        tf = time final
-        h = step size"""
+    """ 
+    f  = list of functions with the form f(y[0], y[1], ... y[n])
+    y  = list of initial values y[0] = initial value for first variable
+    tf = time final
+    h  = step size"""
     plot = []
     for i in np.arange(0, tf+h, h):
         yOld = list(y)
@@ -198,42 +207,36 @@ def RK4(f, t, x, h):
     xOut = [i + 1/6*(j + 2*k + 2*l + m)*h for i, j, k, l, m in zip(x, k1, k2, k3, k4)]
     return xOut
 
-def bottle_rocket(P_init, vw_init, dn, h, tf=0.03, mode='RK4'):
+def bottle_rocket(P_init, vw_init, dn, h, tf=0.03):
     """ Calculates the mass of water, velocity and position
     of a 2 liter bottle rocket
-    P_init = initial pressure of air (psig)
+    P_init  = initial pressure of air (psig)
     vw_init = initial volume of water (L)
-    dn = diameter of the nozzle (mm)"""
-    global An, P0, Vw0       # Setting global variables because why not
+    dn      = diameter of the nozzle (mm)"""
+    global An, P0, Vw0, Va0  # Setting global variables because why not
     P0 = P_init*6895         # Convert from psi to kpa
     P0 += Pa                 # Convert to absolute pa
     An = Area(dn/1000)       # Convert from mm to m
     Vw0 = vw_init*1e-6       # Convert from mL to m^3
+    Va0 = Vtot - Vw0         # Setting volume of air
     vb0 = 0                  # Initial velocity of the bottle
 
     mw0 = Equation3Mass(Vw0) # Getting mass of water given initial volume of water
 
-    if mode == 'eulers':
-        plot = Eulers([Equation2, Equation10, Equation15], [mw0, vb0, 0], tf, h)
-        print(plot[2][0])
-    elif mode == 'RK4':
-        plot = []
-        x = [mw0, vb0, 0]
-        for t in np.arange(0, tf, h):
-            row = [t + h]
-            x = RK4([Equation2, Equation10, Equation15], t, x, h)
-            row.extend(x)
-            plot.append(row)
-        print(plot[-1][1])
-        
+    plot = []
+    x = [mw0, vb0, 0]
+    for t in np.arange(0, tf, h):
+        row = [t + h]
+        x = RK4([Equation2, Equation10, Equation15], t, x, h)
+        row.extend(x)
+        plot.append(row)
+    print(plot[-1][1])
+    plots = np.array(plot).T
+    plt.plot(plots[0], plots[3])
+    plt.show()
         
 
 def main():
-    # Part 1
-    # bottle_rocket(80, 100, 4.64, 0.001, tf=0.003, mode='eulers')
-    # bottle_rocket(80, 100, 4.64, 0.01, mode='eulers')
-
-    # Part 2
     bottle_rocket(80, 100, 4.64, 0.001, tf=0.003)
     bottle_rocket(80, 100, 4.64, 0.001, tf=0.180)
 
