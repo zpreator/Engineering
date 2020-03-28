@@ -95,11 +95,14 @@ def Equation10(y):
     vb = velocity of bottle
     (Each ODE takes all three parameters mw, vb, and yb)"""
     mw, vb, yb, t = y
-    Vw = Equation3Vol(mw)  # L Mass of water to volume of water
-    Va = Vtot - Vw         # L Total volume of bottle - water to get volume of air
-    ma = Equation3MassAir(Va) # kg mass of air 
-    m = mw + mb + ma       # kg total mass of bottle + water + air
-    return -SumForces(Vw, vb, m)/m
+    Vw            = Equation3Vol(mw)     # L Mass of water to volume of water
+    Va            = Vtot - Vw            # L Total volume of bottle - water to get volume of air
+    PbAbs         = Equation9(Va, Vw)    # Pa absolute pressure in bottle
+    Pb            = Equation6Gage(PbAbs) # Pa gage pressure in bottle
+    vw            = Equation1(Pb)        # m/s velocity of water exiting nozzle
+    ma            = Equation3MassAir(Va) # kg mass of air 
+    m             = mw + mb + ma         # kg total mass of bottle + water + air
+    return SumForces(vw, vb, m, Vw)/m
 
 def Equation12(m):
     """ returns the weight due to gravity given:
@@ -111,10 +114,10 @@ def Equation13(Vb):
     Vb = velocity of the bottle m/s"""
     return 0.5*rhoa*Vb**2*Ab*Cd
 
-def Equation14(Vw):
+def Equation14(vw, Vw):
     """ returns the force of thrust given:
     Vw = Volume of water"""
-    return Vw*Equation4(Vw)
+    return -vw*Equation4(vw)
 
 def Equation15(y):
     """ ODE3
@@ -123,13 +126,13 @@ def Equation15(y):
     mw, vb, yb, t = y
     return vb
 
-def SumForces(Vw, vb, mb):
+def SumForces(vw, vb, mb, Vw):
     """ returns the sum of forces given:
     Vw = the Volume of water m^3
     vb = velocity of the bottle m/s
     mb = mass of the bottle kg"""
     # + Thrust - drag - weight
-    return Equation14(Vw)-Equation13(vb)-Equation12(mb)
+    return Equation14(vw, Vw)-Equation13(vb)-Equation12(mb)
 
 def Area(d):
     """ Returns the circular area given:
@@ -232,7 +235,7 @@ def bottle_rocket(P_init, vw_init, dn, h, tf=0.03):
         plot.append(row)
     print(plot[-1][1])
     plots = np.array(plot).T
-    plt.plot(plots[0], plots[3])
+    plt.plot(plots[0], plots[1], '-')
     plt.show()
         
 

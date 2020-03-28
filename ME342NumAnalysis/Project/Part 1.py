@@ -230,11 +230,11 @@ def bottle_rocket(P_init, vw_init, dn, h, tf=0.03, mode='RK4'):
 
 def main():
     # Part 1
-    # bottle_rocket(80, 100, 4.64, 0.001, tf=0.003, mode='eulers')
-    # bottle_rocket(80, 100, 4.64, 0.01, mode='eulers')
+    bottle_rocket(80, 100, 4.64, 0.001, tf=0.003, mode='eulers')
+    bottle_rocket(80, 100, 4.64, 0.01, mode='eulers')
 
     # Part 2
-    bottle_rocket(80, 100, 4.64, 0.001, tf=0.003)
-    bottle_rocket(80, 100, 4.64, 0.001, tf=0.180)
+    # bottle_rocket(80, 100, 4.64, 0.001, tf=0.003)
+    # bottle_rocket(80, 100, 4.64, 0.001, tf=0.180)
 
 main()
