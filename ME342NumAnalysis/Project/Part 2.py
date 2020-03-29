@@ -12,6 +12,7 @@ mb    = 60           # g (mass of empty bottle)
 Cd    = 0.82         # Coefficient of drag (Unitless)
 rhow  = 998          # kg/m^3 (water density)
 Vtot  = 2            # L (2 liter bottle)
+An    = 0            # mm Diameter of the nozzle
 
 # Calculations/Conversions
 rhoa  = Pa/(R*T)/1000# kg/m^3 (air density in Rexburg)
@@ -22,14 +23,16 @@ D    /= 39.37        # in to m (Diameter of 2 liter bottle)
 
 # Initial conditions (Will be set in bottle_rocket())
 P0    = 0
-Pinter = 0
-An    = 0
-Vw0   = 0
 Va0   = 0
 def Equation1(P):
     """ returns the velocity in m/s given:
     P = pressure in pa"""
     return np.sqrt(2*P/rhow)
+
+def Equation1Pressure(V):
+    """ returns the pressure in pa given:
+    V = velocity in m/s"""
+    return rhow*V**2/2
 
 def Equation2(y):
     """ ODE1
@@ -42,9 +45,9 @@ def Equation2(y):
     PbAbs         = Equation9(Va, Vw)    # Pa absolute pressure in bottle
     Pb            = Equation6Gage(PbAbs) # Pa gage pressure in bottle
     v             = Equation1(Pb)        # m/s velocity of water exiting nozzle
-    global Va0, Pinter
-    Pinter        = PbAbs                # Setting global variable pressure in bottle
-    Va0           = Va                   # Setting global variable volume of air in bottle
+    # global Va0, Pinter
+    # Pinter        = PbAbs                # Setting global variable pressure in bottle
+    # Va0           = Va                   # Setting global variable volume of air in bottle
     return Equation4(v)
 
 def Equation3Vol(m):
@@ -127,6 +130,12 @@ def Equation15(y):
     mw, vb, yb, t = y
     return vb
 
+def GetPressureFromMassW(mw):
+    Vw            = Equation3Vol(mw)     # m^3 Volume of water in bottle
+    Va            = Vtot-Vw        # m^3 Volume of air in bottle
+    PbAbs         = Equation9(Va, Vw)    # Pa absolute pressure in bottle
+    return PbAbs
+
 def SumForces(vw, vb, mb, Vw):
     """ returns the sum of forces given:
     Vw = the Volume of water m^3
@@ -156,9 +165,13 @@ def Eulers(f, y, tf, h):
         plot.append(y)
     return plot
 
-def UpdatePressure():
-    global P0, Pinter
-    P0 = Equation2()
+def UpdateValues(x):
+    mw, vb, yb = x
+    global P0, Va0
+    Vw            = Equation3Vol(mw)     # m^3 Volume of water in bottle
+    Va            = Vtot-Vw              # m^3 Volume of air in bottle
+    P0            = Equation9(Va, Vw)    # Pa absolute pressure in bottle for next time step
+    Va0           = Va                   # Setting global variable Volume of air for next time step
 
 def K1(f, t, x):
     """ Returns the k1 calculations
@@ -208,12 +221,13 @@ def RK4(f, t, x, h):
     t = independent variable
     x = list of initial values
     h = step size"""
+    y = list(x)
     k1 = K1(f, t,x)
     k2 = K2(f, t,x , h, k1)
     k3 = K3(f, t,x , h, k2)
     k4 = K4(f, t,x , h, k3)
     xOut = [i + 1/6*(j + 2*k + 2*l + m)*h for i, j, k, l, m in zip(x, k1, k2, k3, k4)]
-    UpdatePressure()
+    UpdateValues(y)
     return xOut
 
 def bottle_rocket(P_init, vw_init, dn, h, tf=0.03):
@@ -222,28 +236,41 @@ def bottle_rocket(P_init, vw_init, dn, h, tf=0.03):
     P_init  = initial pressure of air (psig)
     vw_init = initial volume of water (L)
     dn      = diameter of the nozzle (mm)"""
-    global An, P0, Vw0, Va0  # Setting global variables because why not
+    global An, P0, Va0  # Setting global variables because why not
     P0 = P_init*6895         # Convert from psi to kpa
     P0 += Pa                 # Convert to absolute pa
     An = Area(dn/1000)       # Convert from mm to m
     Vw0 = vw_init*1e-6       # Convert from mL to m^3
     Va0 = Vtot - Vw0         # Setting volume of air
-    vb0 = 0                  # Initial velocity of the bottle
+    vb0 = Equation1(P0)      # Initial velocity of the bottle
 
     mw0 = Equation3Mass(Vw0) # Getting mass of water given initial volume of water
 
     plot = []
     x = [mw0, vb0, 0]
     for t in np.arange(0, tf, h):
-        row = [t + h]
+        row = [t+h]
         x = RK4([Equation2, Equation10, Equation15], t, x, h)
         row.extend(x)
+        row.extend([P0])
         plot.append(row)
     print(plot[-1][1])
-    plots = np.array(plot).T
-    print(plots[1])
-    # plt.plot(plots[0], plots[1], '-')
-    # plt.show()
+    t = [plot[i][0] for i in range(len(plot))]
+    P = [plot[i][4] for i in range(len(plot))]
+    Vw = [Equation3Vol(plot[i][1]) for i in range(len(plot))]
+    vw = [Equation1(i) for i in P]
+
+    plt.plot(t, P, '-', label='Pressure in bottle')
+    plt.legend()
+    plt.show()
+
+    plt.plot(t, Vw, '-', label='Volume of water')
+    plt.legend()
+    plt.show()
+
+    plt.plot(t, vw, '-', label='Velocity of water')
+    plt.legend()
+    plt.show()
         
 
 def main():
