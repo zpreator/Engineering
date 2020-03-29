@@ -1,4 +1,25 @@
 import matplotlib.pyplot as plt
+import numpy as np
+
+def Display(data, lineType, label='', done = False, xLabel=None, yLabel=None, plotLabel=None, f=None, log=False, save=False, show=True):
+    """ Displays data as [x, y]"""
+    t = np.arange(0, 4, 0.01)
+    
+    plt.plot(data[0], data[1], lineType, label=label)
+    if (done):
+        if f != None:
+            plt.plot(t, f(t, 1), 'k', label='Exact')
+        if log:
+            plt.xscale("log")
+            plt.yscale("log")
+        plt.xlabel(xLabel)
+        plt.ylabel(yLabel)
+        plt.legend(loc='best')
+        plt.tight_layout()
+        if save:
+            plt.savefig('{0}.pdf'.format(plotLabel))
+        if show:
+            plt.show()
 
 def ProduceLatexTable(columnHeadings, data, title='', label=''):
     """ Prints latex table"""

@@ -235,8 +235,9 @@ def bottle_rocket(P_init, vw_init, dn, h, tf=0.03):
         plot.append(row)
     print(plot[-1][1])
     plots = np.array(plot).T
-    plt.plot(plots[0], plots[1], '-')
-    plt.show()
+    print(plots[1])
+    # plt.plot(plots[0], plots[1], '-')
+    # plt.show()
         
 
 def main():
