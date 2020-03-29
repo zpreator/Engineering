@@ -22,6 +22,7 @@ D    /= 39.37        # in to m (Diameter of 2 liter bottle)
 
 # Initial conditions (Will be set in bottle_rocket())
 P0    = 0
+Pinter = 0
 An    = 0
 Vw0   = 0
 Va0   = 0
@@ -41,8 +42,8 @@ def Equation2(y):
     PbAbs         = Equation9(Va, Vw)    # Pa absolute pressure in bottle
     Pb            = Equation6Gage(PbAbs) # Pa gage pressure in bottle
     v             = Equation1(Pb)        # m/s velocity of water exiting nozzle
-    global P0, Va0
-    P0            = PbAbs                # Setting global variable pressure in bottle
+    global Va0, Pinter
+    Pinter        = PbAbs                # Setting global variable pressure in bottle
     Va0           = Va                   # Setting global variable volume of air in bottle
     return Equation4(v)
 
@@ -155,6 +156,10 @@ def Eulers(f, y, tf, h):
         plot.append(y)
     return plot
 
+def UpdatePressure():
+    global P0, Pinter
+    P0 = Equation2()
+
 def K1(f, t, x):
     """ Returns the k1 calculations
     f = list of functions
@@ -208,6 +213,7 @@ def RK4(f, t, x, h):
     k3 = K3(f, t,x , h, k2)
     k4 = K4(f, t,x , h, k3)
     xOut = [i + 1/6*(j + 2*k + 2*l + m)*h for i, j, k, l, m in zip(x, k1, k2, k3, k4)]
+    UpdatePressure()
     return xOut
 
 def bottle_rocket(P_init, vw_init, dn, h, tf=0.03):
