@@ -6,20 +6,20 @@ import matplotlib.pyplot as plt
 T     = 280          # Kelvin (temperature in Rexburg)
 Pa    = 84800        # Kpa (air pressure in rexburg gage)
 R     = 0.287        # Gas constant (Unitless)
-g     = 9.807        # m/s^2
+g     = 9.81         # m/s^2
 D     = 4.2          # in (Diameter of 2 liter bottle)
 mb    = 60           # g (mass of empty bottle)
-Cd    = 0.6         # Coefficient of drag (Unitless)
+Cd    = 0.6          # Coefficient of drag (Unitless)
 rhow  = 998          # kg/m^3 (water density)
 Vtot  = 2            # L (2 liter bottle)
 An    = 0            # mm Diameter of the nozzle
 
 # Calculations/Conversions
 rhoa  = Pa/(R*T)/1000# kg/m^3 (air density in Rexburg)
-Ab    = np.pi*D**2/4 # m^2 (cross sectional area of bottle)
 Vtot /= 1000         # L to m^3 (initial volume of water)
 mb   /= 1000         # g to kg (mass of empty bottle)
-D    /= 39.37        # in to m (Diameter of 2 liter bottle)
+D    *= 2.54/100     # in to m (Diameter of 2 liter bottle)
+Ab    = np.pi*D**2/4 # m^2 (cross sectional area of bottle)
 
 # Initial conditions (Will be set in bottle_rocket())
 P0    = 0
@@ -60,10 +60,10 @@ def Equation3Mass(V):
     V = volume of water m^3"""
     return rhow*V
 
-def Equation3MassAir(V):
-    """ returns the mass of water given:
-    V = volume of water m^3"""
-    return rhoa*V
+def Equation3MassAir(P, Va):
+    """ returns the mass of air given:
+    V = volume of air m^3"""
+    return P*Va/T/R/1000
 
 def Equation4(v):
     """ returns the mass flow rate of water given:
@@ -99,30 +99,31 @@ def Equation10(y):
     vb = velocity of bottle
     (Each ODE takes all three parameters mw, vb, and yb)"""
     mw, vb, yb, t = y
-    Vw            = Equation3Vol(mw)     # L Mass of water to volume of water
-    Va            = Vtot - Vw            # L Total volume of bottle - water to get volume of air
-    PbAbs         = Equation9(Va, Vw)    # Pa absolute pressure in bottle
-    Pb            = Equation6Gage(PbAbs) # Pa gage pressure in bottle
-    vw            = Equation1(Pb)        # m/s velocity of water exiting nozzle
-    ma            = Equation3MassAir(Va) # kg mass of air 
-    m             = mw + mb + ma         # kg total mass of bottle + water + air
-    return SumForces(vw, vb, m, Vw)/m
+    Vw            = Equation3Vol(mw)            # L Mass of water to volume of water
+    Va            = Vtot - Vw                   # L Total volume of bottle - water to get volume of air
+    PbAbs         = Equation9(Va, Vw)           # Pa absolute pressure in bottle
+    Pb            = Equation6Gage(PbAbs)        # Pa gage pressure in bottle
+    vw            = Equation1(Pb)               # m/s velocity of water exiting nozzle
+    ma            = Equation3MassAir(PbAbs, Va) # kg mass of air 
+    m             = mw + mb + ma                # kg total mass of bottle + water + air
+    F             = SumForces(vw, vb, m, Vw)    # Getting net forces acting on bottle
+    return F/m
 
 def Equation12(m):
     """ returns the weight due to gravity given:
     m = mass kg"""
-    if m < 0:
-        return 0
+    # if m < 0:
+    #     return 0
     return m*g
 
 def Equation13(Vb):
     """ returns the drag force on the bottle given: 
     Vb = velocity of the bottle m/s"""
-    return 0.5*rhoa*Vb**2*Ab*Cd
+    return 0.5 * rhoa * Vb**2 * Ab * Cd
 
 def Equation14(vw, Vw):
     """ returns the force of thrust given:
-    Vw = Volume of water"""
+    vw = Velocity of water"""
     return -vw*Equation4(vw)
 
 def Equation15(y):
@@ -211,7 +212,7 @@ def K4(f, t, x, h, K3):
     f = list of functions
     t = independent variable
     x = list of dependent variables"""
-    T = t + .5*h
+    T = t + h
     X = [i + h*j for i, j in zip(x, K3)]
     X.append(T)
     K4 = [func(X) for func in f]
@@ -232,6 +233,26 @@ def RK4(f, t, y, h):
     # UpdateValues(y)
     return xOut
 
+def Display(data, lineType, label='', done = True, xLabel=None, yLabel=None, plotLabel=None, f=None, log=False, save=True, show=False):
+    """ Displays data as [x, y]"""
+    t = np.arange(0, 4, 0.01)
+    
+    plt.plot(data[0], data[1], lineType, label=label)
+    if (done):
+        if f != None:
+            plt.plot(t, f(t, 1), 'k', label='Exact')
+        if log:
+            plt.xscale("log")
+            plt.yscale("log")
+        plt.xlabel(xLabel)
+        plt.ylabel(yLabel)
+        plt.legend(loc='best')
+        plt.tight_layout()
+        if save:
+            plt.savefig('{0}.pdf'.format(label))
+        if show:
+            plt.show()
+
 def bottle_rocket(P_init, vw_init, dn, h, tf=0.03):
     """ Calculates the mass of water, velocity and position
     of a 2 liter bottle rocket
@@ -244,20 +265,23 @@ def bottle_rocket(P_init, vw_init, dn, h, tf=0.03):
     An = Area(dn/1000)       # Convert from mm to m
     Vw0 = vw_init*1e-6       # Convert from mL to m^3
     Va0 = Vtot - Vw0         # Setting volume of air
-    vb0 = Equation1(P0)      # Initial velocity of the bottle
+    # vb0 = Equation1(P0)    # Initial velocity of the bottle
+    vb0 = 0
 
     mw0 = Equation3Mass(Vw0) # Getting mass of water given initial volume of water
 
     plot = []
     x = [mw0, vb0, 0]
-    for t in np.arange(0, tf, h):
-        row = [t+h]
-        x = RK4([Equation2, Equation10, Equation15], t, x, h)
+    plot.append([0, mw0, vb0, 0, P0])
+    t_list = [0]
+    for t in np.arange(h, tf+h, h):
+        row = [t]
+        x = RK4([Equation2, Equation10, Equation15], t_list[-1], x, h)
         UpdateValues(x)
         row.extend(x)
         row.extend([P0])
         plot.append(row)
-    
+        t_list.append(t_list[-1]+h)
     guess = RK4([Equation2, Equation10, Equation15], tf, x, h)
     dtf = (x[0] - 0)/(x[0]-guess[0])*h
     x = RK4([Equation2, Equation10, Equation15], tf, x, dtf)
@@ -267,32 +291,63 @@ def bottle_rocket(P_init, vw_init, dn, h, tf=0.03):
     row.extend([P0])
     plot.append(row)
 
-    m = [plot[i][1] for i in range(len(plot))]
-    t = [plot[i][0] for i in range(len(plot))]
-    P = [plot[i][4] for i in range(len(plot))]
-    Vw = [Equation3Vol(plot[i][1]) for i in range(len(plot))]
-    vw = [Equation1(i) for i in P]
+    # Extracting all lists of items at each time step
+    t  = [plot[i][0]      for i in range(len(plot))] # Time at each step
+    mw = [plot[i][1]      for i in range(len(plot))] # Mass of water
+    vb = [plot[i][2]      for i in range(len(plot))] # Velocity of bottle
+    y  = [plot[i][3]      for i in range(len(plot))] # Distance y
+    P  = [plot[i][4]      for i in range(len(plot))] # Pressure in bottle
 
-    print('Mass =', m[-1])
-    print('t =', t[-1])
-    print('P =', P[-1])
+    # Calculations to get various values in list form at each time step
+    Vw = [Equation3Vol(plot[i][1]) for i in range(len(plot))]         # Volume of water
+    Va = [Vtot - i for i in Vw]                                       # Volume of air
+    ma = [Equation3MassAir(i, j) for i, j in zip(P, Va)]              # Mass of air
+    vw = [Equation1(i-Pa) for i in P]                                 # Velocity of water
+    m  = [mb + i + j for i, j in zip(mw, ma)]                         # Total mass of all components
+    Th = [Equation14(i, j) for i, j in zip(vw, Vw)]                   # Thrust on bottle
+    Df = [Equation13(i) for i in vb]                                  # Drag force on bottle
+    F  = [SumForces(i, j, k, l) for i, j, k, l in zip(vw, vb, m, Vw)] # Sum of forces
+    ab = np.diff(vb)/np.diff(t)                                       # Acceleration of bottle
+
+    
 
 
-    plt.plot(t, P, '-', label='Pressure in bottle')
-    plt.legend()
-    # plt.show()
+    # Values at t = 0.003
+    i = 3
+    print('t   = {0:4.8f} s  '.format(t [i]))
+    print('m_w = {0:4.8f} kg '.format(mw[i]))
+    print('vb  = {0:4.8f} m/s'.format(vb[i]))
+    print('Df  = {0:4.8f} N  '.format(Df[i]))
+    print('Y   = {0:4.8f} mm '.format(y [i]))
+    print('Th  = {0:4.8f} N  '.format(Th[i]))
+    print('When Water is Gone:')
+    print('t   = {0:4.8f} s  '.format(t [-1]))
+    print('m_w = {0:4.8f} kg '.format(mw[-1]))
+    print('vb  = {0:4.8f} m/s'.format(vb[-1]))
+    print('Y   = {0:4.8f} m  '.format(y [-1]/1000))
 
-    plt.plot(t, Vw, '-', label='Volume of water')
-    plt.legend()
-    # plt.show()
+    
+    plt.figure(figsize=(5,3)) 
+    Display([t, P ], '-', label='Pressure in bottle',       xLabel='Time (s)', yLabel=r'Pressure $(Kpa)$')
+    plt.figure(figsize=(5,3)) 
+    Display([t, Th], '-', label='Volume of water',       xLabel='Time (s)', yLabel=r'Volume $(m^3)$')
+    plt.figure(figsize=(5,3)) 
+    Display([t, Vw], '-', label='Velocity of water',       xLabel='Time (s)', yLabel=r'Velocity $(m/s)$')
+    plt.figure(figsize=(5,3)) 
+    Display([t, Th], '-', label='Thrust on Bottle',       xLabel='Time (s)', yLabel=r'Thrust $(N)$')
+    plt.figure(figsize=(5,3)) 
+    Display([t, Df], '-', label='Drag Force on Bottle',   xLabel='Time (s)', yLabel=r'Drag Force $(N)$')
+    plt.figure(figsize=(5,3)) 
+    Display([t, vb], '-', label='Velocity of Bottle',     xLabel='Time (s)', yLabel=r'Velocity $(m/s)$')
+    plt.figure(figsize=(5,3)) 
+    Display([t, y ],  '-', label='Altitude of Bottle',     xLabel='Time (s)', yLabel=r'Altitude $(m)$')
 
-    plt.plot(t, vw, '-', label='Velocity of water')
-    plt.legend()
-    # plt.show()
-        
+    plt.figure(figsize=(5, 3))
+    del t[-1] # This must be done..
+    Display([t, ab], '-', label='Acceleration of Bottle', xLabel='Time (s)', yLabel=r'Acceleration $(m/s^2)$')  
 
 def main():
-    bottle_rocket(80, 100, 4.64, 0.001, tf=0.003)
+    # bottle_rocket(80, 100, 4.64, 0.001, tf=0.003)
     bottle_rocket(80, 100, 4.64, 0.001, tf=0.180)
 
 main()

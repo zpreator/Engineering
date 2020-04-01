@@ -1,12 +1,15 @@
 import numpy as np
 
-def HallandFriction(epsilon, D, Re):
+def Haaland(epsilon, D, Re):
     """ Returns the friction factor given:
     epsilon = roughness (ft/mm)
     D = diameter (ft/mm)
     Re = Reynolds Number"""
     f = 18/11/(np.log((epsilon/D/3.7)**1.11 + 6.9/Re))**2
     return f
+
+def fLaminar(Re):
+    return 64/Re
 
 def ReynoldsNumber(V, D, nu):
     """ Returns the reynolds number given V, D, nu
