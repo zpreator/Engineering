@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 """Zachary Preator
 """
 # Constants/Givens
@@ -273,7 +274,7 @@ def Display(data, lineType, label='', done = True, xLabel=None, yLabel=None, plo
         if show:
             plt.show()
 
-def bottle_rocket(P_init, vw_init, dn, h, tf=0.03, showPlot=True):
+def bottle_rocket(P_init, vw_init, dn, h, tf=0.03, showPlot=True, animate=False):
     """ Calculates the mass of water, velocity and position
     of a 2 liter bottle rocket
     P_init  = initial pressure of air (psig)
@@ -392,9 +393,30 @@ def bottle_rocket(P_init, vw_init, dn, h, tf=0.03, showPlot=True):
         tnew = [t[i] for i in range(len(t)-2)]
         acc = [ab[i] for i in range(len(ab)-1)]
         Display([tnew, acc], '-', label='Acceleration of Bottle', xLabel='Time (s)', yLabel=r'Acceleration $(m/s^2)$')  
+    if animate:
+        fig = plt.figure()
+        ax = plt.axes(xlim=(0, 4), ylim=(-2, 2))
+        line, = ax.plot([], [], lw=3)
+
+        def init():
+            line.set_data([], [])
+            return line,
+
+        def animate(i):
+            x = np.linspace(0, 4, 1000)
+            y = np.sin(2*np.pi*(x-0.01*i))
+            line.set_data(x, y)
+            return line,
+            
+        anim = FuncAnimation(fig, animate, init_func=init, frames=200, interval=20, blit=True)
+        anim.save('sine_wave.gif', writer='imagemagick')
+
+
+
+
 
 def main():
     # bottle_rocket(80, 100, 4.64, 0.001, tf=0.003)
-    bottle_rocket(80, 100, 4.64, 0.001, tf=None, showPlot=True)
+    bottle_rocket(80, 100, 4.64, 0.001, tf=None, showPlot=False, animate=True)
 
 main()
