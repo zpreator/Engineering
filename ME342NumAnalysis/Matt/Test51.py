@@ -1,6 +1,42 @@
 import numpy as np
 from ZachsPackage import Screw
 
+def TorqueRaiseThread(F, dm, ft, l):
+    return F*dm/2*(l + np.pi*ft*dm)/(np.pi*dm - ft*l)
+
+def TorqueLowerThread(F, dm, ft, l):
+    return F*dm/2*(np.pi*ft*dm-l)/(np.pi*dm+ft*l)
+
+def TorqueCollar(F, fc, dc):
+    return F*fc*dc/2
+
+def TorqueToRaiseWCollar(F, ft, fc, dm, dc, l):
+    return TorqueRaiseThread(F, dm, ft, l) + TorqueCollar(F, fc, dc)
+
+def TorqueToLowerWCollar(F, ft, fc, dm, dc, l):
+    return TorqueLowerThread(F, dm, ft, l) + TorqueCollar(F, fc, dc)
+
+def ForceFromTorqueRaiseCollar(T, dm, dc, ft, fc, l):
+    return T/(dm/2*(l+np.pi*ft*dm)/(np.pi*dm-ft*l) + fc*dc/2)
+    
+def Efficiency(F, l, Tr):
+    return F*l/(2*np.pi*Tr)
+
+def SpringRate(E, d, D, t):
+    return 0.5774*np.pi*E*d/np.log((1.155*t+D-d)*(D+d)/((1.155*t+D+d)*(D-d)))
+
+def Goodman(Se, Sut, sigmaI, sigmaA, sigmaM):
+    if sigmaM == 0:
+        return (Se*(Sut - sigmaI))/(sigmaA*(Sut + Se))
+    else:
+        return (Se*(Sut-sigmaI))/(Sut*sigmaA + Se*(sigmaM - sigmaI))
+
+def Gerber(Se, Sut, sigmaI, sigmaA):
+    return 1/(2*sigmaA*Se)*(Sut*np.sqrt(Sut**2 + 4*Se*(Se + sigmaI)) - Sut**2 - 2*sigmaI*Se)
+
+def ASMEElliptic(Se, Sut, Sp, sigmaI, sigmaA):
+    return Se/(sigmaA*(Sp**2 + Se**2))*(Sp*np.sqrt(Sp**2+Se**2-sigmaI**2)-sigmaI*Se)
+
 def Problem2():
     """ CORRECT
     What is the torque, in pound-inches, required 
@@ -237,7 +273,7 @@ def Problem11():
     tau = F/At
     print(tau)
 
-# Problem2()
+Problem2()
 # Problem3()
 # Problem4()
 # Problem5()
@@ -246,4 +282,4 @@ def Problem11():
 # Problem7Review()
 # Problem8()
 # Problem9()
-Problem11()
+# Problem11()

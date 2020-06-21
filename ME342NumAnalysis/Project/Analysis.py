@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-from scipy import integrate
+from scipy import optimize
 """Zachary Preator
 """
 # Constants/Givens
@@ -375,28 +375,38 @@ def bottle_rocket(P_init, vw_init, dn, h, tf=0.03, showPlot=True):
 
     # Values at t = 0.003
     i = 3
-    print('At t            = 0.003 s:')
-    # print('t   = {0:4.8f} s  '.format(t [i]))
-    print('Mass of Water   = {0:4.8f} kg  '.format(mw[i]))
-    print('Bottle Velocity = {0:4.8f} m/s '.format(vb[i]))
-    print('Drag Force      = {0:4.8f} N   '.format(Df[i]))
-    print('Altitude        = {0:4.8f} mm  '.format(y [i]))
-    print('Thrust          = {0:4.8f} N \n'.format(Th[i]))
+    # print('At t            = 0.003 s:')
+    # # print('t   = {0:4.8f} s  '.format(t [i]))
+    # print('Mass of Water   = {0:4.8f} kg  '.format(mw[i]))
+    # print('Bottle Velocity = {0:4.8f} m/s '.format(vb[i]))
+    # print('Drag Force      = {0:4.8f} N   '.format(Df[i]))
+    # print('Altitude        = {0:4.8f} mm  '.format(y [i]))
+    # print('Thrust          = {0:4.8f} N \n'.format(Th[i]))
 
-    print('Water Runs out  = {0:4.8f} s   '.format(te))
-    print('Altitude        = {0:4.8f} m \n'.format(ye))
-    print('Drag            = {0:4.8f}'.format(max(Df)))
+    # print('Water Runs out  = {0:4.8f} s   '.format(te))
+    # print('Altitude        = {0:4.8f} m \n'.format(ye))
 
-    print('Max Velocity    = {0:4.8f} m/s '.format(max(vb)))
-    print('Max Altitude    = {0:4.8f} m   '.format(max(y)))
-    print('Time at Max Alt = {0:4.8f} s \n'.format(t[np.argmax(y)]))
-    print('End of Flight:')
-    j = -1
-    print('Impact Time     = {0:4.8f} s  '.format(t [j]))
-    # print('Mass of Water   = {0:4.8f} kg '.format(mw[j]))
-    print('Bottle Velocity = {0:4.8f} m/s'.format(vb[j]))
-    # print('Altitude        = {0:4.8f} m  '.format(y [j]))
-    print('Drag            = {0:4.8f} \n'.format(Df[j]))
+    # print('Max Velocity    = {0:4.8f} m/s '.format(max(vb)))
+    # print('Max Altitude    = {0:4.8f} m   '.format(max(y)))
+    # print('Time at Max Alt = {0:4.8f} s \n'.format(t[np.argmax(y)]))
+    # print('End of Flight:')
+    # j = -1
+    # print('Impact Time     = {0:4.8f} s  '.format(t [j]))
+    # # print('Mass of Water   = {0:4.8f} kg '.format(mw[j]))
+    # print('Bottle Velocity = {0:4.8f} m/s'.format(vb[j]))
+    # # print('Altitude        = {0:4.8f} m  '.format(y [j]))
+
+    # print('Integrated mass flow rate= ', -np.trapz(mdot_list)/1000)
+    # print('Beginning mass of water= ', mw0)
+
+    # maxIndex = np.argmax(y)
+    # ascent = vb[0:maxIndex]
+    # descent = vb[maxIndex:-1]
+    # int1 = np.trapz(ascent, dx=h)
+    # int2 = -np.trapz(descent, dx=h)
+    # dist = int1+int2
+    # print('Integrated velocity= ', dist)
+    # print('Total distance traveled= ', max(y)*2)
 
     intMass = -np.trapz(mdot_list)/1000
     print('Integrated mass flow rate = {0:4.5f} kg  '.format(intMass))
@@ -415,8 +425,6 @@ def bottle_rocket(P_init, vw_init, dn, h, tf=0.03, showPlot=True):
     e = abs(dist - max(y)*2)/dist*100
     print('Absolute error = {0:4.5f} %  '.format(e))
 
-    plt.figure(figsize=(5,3)) 
-    Display([t, y ],  'k-', label='Altitude of Bottle Final',     xLabel='Time (s)', yLabel=r'Altitude $(m)$')
     if showPlot:
         plt.figure(figsize=(5,3)) 
         Display([t, P ], 'b-', label='Pressure in bottle',       xLabel='Time (s)', yLabel=r'Pressure $(Kpa)$')
@@ -439,6 +447,58 @@ def bottle_rocket(P_init, vw_init, dn, h, tf=0.03, showPlot=True):
         Display([tnew, acc], 'b-', label='Acceleration of Bottle', xLabel='Time (s)', yLabel=r'Acceleration $(m/s^2)$')
     return max(y)
 
+# # for changing pressure
+# press = [i for i in range(60, 160, 10)]
+# altPress = [bottle_rocket(i, 100, 4.64, 0.001, tf=None, showPlot=False) for i in press]
 
-# bottle_rocket(80, 100, 4.64, 0.001, tf=None, showPlot=False)
-bottle_rocket(150, 900, 3, 0.001, tf=None, showPlot=False)
+# # changing water volume
+# vol = [i for i in range(100, 1300, 100)]
+# altvol = [bottle_rocket(80, i, 4.64, 0.001, tf=None, showPlot=False) for i in vol]
+
+# # changing diameter
+# dia = [i for i in np.arange(1.5, 6.5, 0.5)]
+# altDia = [bottle_rocket(80, 100, i, 0.001, tf=None, showPlot=False) for i in dia]
+
+print(bottle_rocket(150, 900, 3, 0.001, tf=None, showPlot=False))
+
+# def func(x, a, b, c, d):
+#     return a + b*x + c*x**2 + d*x**3
+
+# def func2(x, a, b, c, d, e, f, g):
+#     return a + b*x + c*x**2 + d*x**3 + e*x**4 + f*x**5 + g*x**6
+
+# plt.figure(figsize=(5,3))
+# p = np.arange(press[0], press[-1]+.1, 0.1)
+# plt.plot(press, altPress, 'ro--', label='Pressure')
+# popt, pcov = optimize.curve_fit(func, press, altPress)
+# plt.plot(p, func(p, *popt), 'c-', label='Curve Fit')
+# plt.xlabel(r'Pressure $(psi)$')
+# plt.ylabel(r'Altitude $(m)$')
+# plt.legend()
+# plt.tight_layout()
+# plt.savefig('PressureParam.pdf')
+# plt.show()
+
+# plt.figure(figsize=(5,3))
+# v = np.arange(vol[0], vol[-1]+.1, 0.1)
+# plt.plot(vol, altvol, 'yo--', label='Volume')
+# popt, pcov = optimize.curve_fit(func, vol, altvol)
+# plt.plot(v, func(v, *popt), 'c-', label='Curve Fit')
+# plt.xlabel(r'Volume $(mL)$')
+# plt.ylabel(r'Altitude $(m)$')
+# plt.legend()
+# plt.tight_layout()
+# plt.savefig('VolumeParam.pdf')
+# plt.show()
+
+# plt.figure(figsize=(5,3))
+# d = np.arange(dia[0], dia[-1]+.1, 0.1)
+# plt.plot(dia, altDia, 'go--', label='Diameter')
+# popt, pcov = optimize.curve_fit(func2, dia, altDia)
+# plt.plot(d, func2(d, *popt), 'c-', label='Curve Fit')
+# plt.xlabel(r'Nozzle Diameter $(mm)$')
+# plt.ylabel(r'Altitude $(m)$')
+# plt.legend()
+# plt.tight_layout()
+# plt.savefig('DiameterParam.pdf')
+# plt.show()

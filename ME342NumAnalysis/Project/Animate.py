@@ -14,7 +14,8 @@ def init():  # only required for blitting to give a clean slate.
 
 
 def animate(i):
-    line.set_ydata(np.sin(x + i / 100))  # update the data.
+    y = np.sin(x + i / 100)
+    line.set_ydata(y)  # update the data.
     return line,
 
 def animate2(i):
@@ -25,7 +26,7 @@ def function(x):
     return x+1
 
 ani = animation.FuncAnimation(
-    fig, animate2, init_func=init, interval=2, blit=True, save_count=50)
+    fig, animate, init_func=init, interval=2, blit=True, save_count=50)
 
 # To save the animation, use e.g.
 #
