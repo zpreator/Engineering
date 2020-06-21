@@ -15,7 +15,7 @@ def Display(data, lineType, label='', done = False, xLabel=None, yLabel=None, pl
         plt.xlabel(xLabel)
         plt.ylabel(yLabel)
         plt.legend(loc='best')
-        plt.tight_layout()
+        # plt.tight_layout()
         if save:
             plt.savefig('{0}.pdf'.format(plotLabel))
         if show:
@@ -58,3 +58,22 @@ def ProduceLatexTable(columnHeadings, data, title='', label=''):
     label = '{' + label + '}'
     print('   \label{0}'.format(label))
     print('\end{table}')
+
+def HowIFeel():
+    with plt.xkcd():
+        ax = plt.subplot(111)
+
+        t = np.arange(0.0, 10, 0.01)
+        s = -t**3+1000
+        line, = plt.plot(t, s, lw=2)
+        plt.plot(9, 271, 'ko')
+
+        plt.annotate('Me', xy=(9, 271), xytext=(3, 700),
+                    arrowprops=dict(facecolor='black', shrink=0.05),
+                    )
+        plt.xlabel('Time')
+        plt.ylabel('Motivation')
+        plt.tight_layout()
+        plt.show()
+
+HowIFeel()
